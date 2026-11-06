@@ -291,7 +291,7 @@ h1, h2, h3 { margin: 0; }
 }
 .hero__inner {
   position: relative;
-  padding-top: clamp(56px, 9vw, 104px);
+  padding-top: clamp(26px, 4.4vw, 52px);
   padding-bottom: clamp(56px, 8vw, 96px);
   display: flex; flex-direction: column; align-items: center;
   text-align: center; gap: 26px;
@@ -881,6 +881,8 @@ h1, h2, h3 { margin: 0; }
 .dialog__done strong { font-size: 20px; font-weight: 600; }
 .dialog__done > span { font-size: 14.5px; line-height: 1.5; color: oklch(0.48 0.01 240); }
 .dialog__done .btn { margin-top: 8px; }
+.dialog__done-tick--pending { background: oklch(0.72 0.14 80 / 0.16); color: oklch(0.5 0.11 70); }
+.dialog__actions { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
 
 body.is-locked { overflow: hidden; }
 

@@ -89,11 +89,18 @@
   wireArrowKeys(accountButtons);
 
   /* -- 5 · Book a demo --------------------------------------------------- */
+
+  /* Demo booking is closed for now: every "Book a demo" button opens a short
+     "not open yet" panel instead of the form. Flip this to true (and wire the
+     form's submit handler to the CRM) to turn booking back on. */
+  var BOOKING_OPEN = false;
+
   var backdrop  = $('[data-demo-backdrop]');
   if (backdrop) {
     var dialog    = $('[data-demo-dialog]');
     var form      = $('[data-demo-form]');
     var done      = $('[data-demo-done]');
+    var closed    = $('[data-demo-unavailable]');
     var nameInput = $('[data-demo-name]');
     var mailInput = $('[data-demo-email]');
     var honeypot  = $('[data-demo-honeypot]');
@@ -113,9 +120,20 @@
       lastFocused = document.activeElement;
       backdrop.hidden = false;
       document.body.classList.add('is-locked');
-      form.hidden = false;
       done.hidden = true;
       errorNote.hidden = true;
+
+      if (!BOOKING_OPEN) {
+        form.hidden = true;
+        closed.hidden = false;
+        dialog.setAttribute('aria-labelledby', 'demo-unavailable-title');
+        $('[data-demo-close]', closed).focus();
+        return;
+      }
+
+      closed.hidden = true;
+      form.hidden = false;
+      dialog.setAttribute('aria-labelledby', 'demo-title');
       refreshSubmit();
       nameInput.focus();
     }

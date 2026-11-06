@@ -47,7 +47,7 @@ State lives in the DOM; the page renders complete without JavaScript and
 | Access matrix | For companies | Click a cell to give or remove access. Alex's personal account is locked and blank for everyone else. Decorative: it resets on reload. |
 | Overview tabs | For companies | By project / person / subscription swaps the table next to the chart. |
 | Account list | Feature 01 | Click a row to make it active; the footer line follows. |
-| Book a demo | every "Book a demo" button | Modal with name, work email and team size. "Request a demo" stays dimmed until the email is valid. |
+| Book a demo | every "Book a demo" button | **Booking is closed right now**: the modal says so and offers "Get started" instead. Set `BOOKING_OPEN = true` in `app.js` to bring back the form (name, work email, team size; "Request a demo" stays dimmed until the email is valid). |
 
 Motion (the pulsing status dots, the blinking "working…") is turned off under
 `prefers-reduced-motion`.
@@ -58,9 +58,10 @@ Motion (the pulsing status dots, the blinking "working…") is turned off under
   on the page is invented (Northwind Studio, orbit-web, Alex Rivera, …). Keep
   them invented or replace them with real, approved examples — and either
   replace the figures in the workspace overview or keep its "sample data" tag.
-- **Wire the demo form.** `app.js` has the submit handler and a honeypot field,
-  but it deliberately sends nothing: point it at the CRM or form endpoint and
-  track the submit event.
+- **Open demo booking.** The form, its validation and a honeypot field are all
+  in place but switched off behind `BOOKING_OPEN` in `app.js`, and the submit
+  handler deliberately sends nothing. To open booking: point the handler at the
+  CRM or form endpoint, track the submit event, then flip the flag.
 - **Verify the claims** in the handoff's "Before launch" list against the
   product: per-account and per-person cost tracking, flagging of shared
   secrets, the mobile and iPad apps, the preconfigured agents, and per-machine

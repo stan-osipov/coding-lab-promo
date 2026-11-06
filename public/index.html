@@ -55,6 +55,7 @@
     <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
     <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
     <symbol id="i-loader" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-6.22-8.56"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></symbol>
   </defs>
 </svg>
 
@@ -812,6 +813,16 @@
 <!-- ====================================================== book a demo -->
 <div class="backdrop" data-demo-backdrop hidden>
   <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="demo-title" data-demo-dialog>
+
+    <div class="dialog__done" data-demo-unavailable hidden>
+      <span class="dialog__done-tick dialog__done-tick--pending"><svg class="ic ic-24" aria-hidden="true"><use href="#i-clock"/></svg></span>
+      <strong id="demo-unavailable-title">Demos aren’t open yet</strong>
+      <span>Booking a demo is currently unavailable. You can start using Coding Lab right away, and we’ll open demos soon.</span>
+      <span class="dialog__actions">
+        <a class="btn btn--primary btn--md" href="https://app.coding-lab.co">Get started<svg class="ic ic-16" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+        <button type="button" class="btn btn--secondary btn--md" data-demo-close>Close</button>
+      </span>
+    </div>
 
     <form data-demo-form novalidate>
       <div class="dialog__head">
