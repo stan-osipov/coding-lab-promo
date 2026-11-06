@@ -1,0 +1,33 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap">
+<style>
+  html,body{margin:0;padding:0}
+  body{width:1200px;height:630px;overflow:hidden;font-family:"Geist",system-ui,sans-serif;
+    background:radial-gradient(900px 420px at 72% -12%, oklch(0.64 0.15 55 / 0.5), transparent 62%),
+               radial-gradient(760px 420px at 0% 108%, oklch(0.62 0.22 320 / 0.26), transparent 62%),
+               oklch(0.17 0.012 250);
+    color:#fff;position:relative}
+  .grid{position:absolute;inset:0;
+    background-image:linear-gradient(oklch(1 0 0 / 0.045) 1px,transparent 1px),linear-gradient(90deg,oklch(1 0 0 / 0.045) 1px,transparent 1px);
+    background-size:48px 48px;
+    -webkit-mask-image:linear-gradient(to bottom,#000 10%,transparent 85%)}
+  .inner{position:relative;height:100%;display:flex;flex-direction:column;justify-content:center;gap:26px;padding:0 76px}
+  .brand{display:flex;align-items:center;gap:14px;font-size:27px;font-weight:600;letter-spacing:-0.01em}
+  .brand img{width:52px;height:52px;border-radius:14px}
+  h1{margin:0;max-width:960px;font-size:66px;line-height:1.03;font-weight:600;letter-spacing:-0.035em}
+  p{margin:0;max-width:820px;font-size:25px;line-height:1.45;color:oklch(0.82 0.01 240)}
+  .chips{display:flex;gap:10px;margin-top:6px}
+  .chip{font-family:"Geist Mono",monospace;font-size:17px;padding:9px 15px;border-radius:999px;
+    border:1px solid oklch(1 0 0 / 0.18);background:oklch(1 0 0 / 0.05);color:oklch(0.9 0.01 240)}
+  .url{position:absolute;right:76px;bottom:52px;font-family:"Geist Mono",monospace;font-size:20px;color:oklch(0.75 0.01 240)}
+</style></head><body>
+<div class="grid"></div>
+<div class="inner">
+  <div class="brand"><img src="../public/favicon.svg" alt="">Coding Lab</div>
+  <h1>Every AI account, project and person, in one place you control.</h1>
+  <p>Run AI coding sessions on your own machines, in one shared project setup, with the accounts your team already pays for.</p>
+  <div class="chips"><span class="chip">your accounts</span><span class="chip">your machines</span><span class="chip">one setup</span></div>
+</div>
+<div class="url">coding-lab.co</div>
+</body></html>
