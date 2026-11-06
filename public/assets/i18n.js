@@ -43,6 +43,7 @@
     if (url.origin === 'https://app.coding-lab.co') originalLinks.push({ node: link, url: url.href });
   });
   var switcher = document.querySelector('[data-language-switch]');
+  var languageButtons = Array.from(switcher.querySelectorAll('[data-language-set]'));
   function render(value, explicit) {
     language = policy.normalize(value) || 'en';
     bindings.forEach(function (binding) {
@@ -52,7 +53,11 @@
     });
     document.documentElement.lang = language === 'ua' ? 'uk' : 'en';
     document.querySelector('meta[property="og:locale"]').content = language === 'ua' ? 'uk_UA' : 'en_US';
-    switcher.value = language;
+    languageButtons.forEach(function (button) {
+      var selected = button.getAttribute('data-language-set') === language;
+      button.setAttribute('aria-checked', selected ? 'true' : 'false');
+      button.tabIndex = selected ? 0 : -1;
+    });
     originalLinks.forEach(function (link) {
       var url = new URL(link.url);
       url.searchParams.set('lng', language);
@@ -76,9 +81,20 @@
   // preference) crosses subdomains; a first visit cannot overwrite the app's account.
   if (policy.normalize(query) || policy.cookieLanguage(cookie) || policy.normalize(saved)) remember(language, true);
   switcher.hidden = false;
-  switcher.addEventListener('change', function () {
-    render(switcher.value, true);
-    remember(language, true);
+  languageButtons.forEach(function (button, index) {
+    button.addEventListener('click', function () {
+      render(button.getAttribute('data-language-set'), true);
+      remember(language, true);
+    });
+    button.addEventListener('keydown', function (event) {
+      var direction = event.key === 'ArrowRight' || event.key === 'ArrowDown' ? 1
+        : event.key === 'ArrowLeft' || event.key === 'ArrowUp' ? -1 : 0;
+      if (!direction) return;
+      event.preventDefault();
+      var next = languageButtons[(index + direction + languageButtons.length) % languageButtons.length];
+      next.focus();
+      next.click();
+    });
   });
   function refreshSharedLanguage() {
     var shared = policy.cookieLanguage(readCookie()) || policy.normalize(readSaved());

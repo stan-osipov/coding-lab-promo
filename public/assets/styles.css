@@ -898,12 +898,14 @@ body.is-locked { overflow: hidden; }
   .topbar__cta .btn--secondary { display: none; }
 }
 
-/* The native selector keeps language names and keyboard behavior accessible. */
+/* A compact version of the audience control, with both languages visible. */
 .language-switch {
-  width: 58px; min-height: 36px; padding: 7px 8px;
-  border: 1px solid var(--border-faint); border-radius: 8px;
-  background: var(--surface, white); color: var(--ink);
-  font: inherit; font-size: 13px; cursor: pointer; flex-shrink: 0;
+  flex-shrink: 0; padding: 3px; gap: 2px;
+  box-shadow: none; background: var(--surface);
+}
+.language-switch button {
+  min-width: 32px; height: 30px; padding: 0 6px;
+  font-size: 11px; font-weight: 600; letter-spacing: .02em;
 }
 @media (max-width: 1120px) { .navlinks { display: none; } }
 @media (max-width: 620px) {
@@ -915,5 +917,5 @@ body.is-locked { overflow: hidden; }
   .brand { font-size: 14px; gap: 6px; }
   .brand__mark { width: 26px; height: 26px; }
   .topbar__cta .btn { padding-inline: 10px; }
-  .language-switch { width: 54px; }
+  .topbar__inner { padding-inline: 16px; gap: 8px; }
 }

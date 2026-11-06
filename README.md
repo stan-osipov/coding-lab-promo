@@ -46,7 +46,7 @@ State lives in the DOM; the page renders complete without JavaScript and
 
 | What | Where | Behaviour |
 |---|---|---|
-| Language switch | top bar | EN / UA; translates both audiences, product previews, accessibility labels and the closed-demo panel. |
+| Language switch | top bar | Compact EN / UA buttons with the active language highlighted; supports keyboard arrows and translates both audiences, product previews, accessibility labels and the closed-demo panel. |
 | Audience switch | hero | `data-audience` on `<body>` swaps the H1, the sub, the benefit cards and the product preview. Default: companies. |
 | Access matrix | For companies | Click a cell to give or remove access. Alex's personal account is locked and blank for everyone else. Decorative: it resets on reload. |
 | Overview tabs | For companies | By project / person / subscription swaps the table next to the chart. |

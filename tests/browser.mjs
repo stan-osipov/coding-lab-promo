@@ -22,7 +22,16 @@ try {
   await page.goto('https://coding-lab.co/');
   await page.waitForFunction(() => window.CodingLabI18n);
   assert.equal(await page.locator('html').getAttribute('lang'), 'en');
-  await page.locator('[data-language-switch]').selectOption('ua');
+  const english = page.getByRole('radio', { name: 'English', exact: true });
+  const ukrainian = page.getByRole('radio', { name: 'Українська', exact: true });
+  assert.equal(await english.getAttribute('aria-checked'), 'true');
+  await english.focus();
+  await page.keyboard.press('ArrowRight');
+  assert.equal(await ukrainian.getAttribute('aria-checked'), 'true');
+  assert.equal(await ukrainian.evaluate(button => button === document.activeElement), true);
+  await page.keyboard.press('ArrowLeft');
+  assert.equal(await english.getAttribute('aria-checked'), 'true');
+  await page.locator('[data-language-set="ua"]').click();
   assert.equal(await page.locator('html').getAttribute('lang'), 'uk');
   assert.equal(await page.title(), 'Coding Lab — простір для розробки з ШІ у вашій компанії');
   assert.equal(await page.locator('.h1 .for-teams').textContent(), 'Простір для розробки з ШІ у вашій компанії.');
@@ -36,11 +45,11 @@ try {
   await page.locator('[data-stats-tab="people"]').click();
   await page.locator('[data-accounts] .account').nth(3).click();
   assert.equal(await page.locator('[data-active-account]').textContent(), 'API-ключ · Компанія');
-  await page.locator('[data-language-switch]').selectOption('en');
+  await page.locator('[data-language-set="en"]').click();
   assert.equal(await grant.locator('.grant__label').textContent(), 'Access');
   assert.equal(await page.locator('[data-active-account]').textContent(), 'API key · Company');
   assert.equal(await page.locator('[data-stats-tab="people"]').getAttribute('aria-selected'), 'true');
-  await page.locator('[data-language-switch]').selectOption('ua');
+  await page.locator('[data-language-set="ua"]').click();
   await page.locator('[data-audience-set="developers"]').click();
   assert.equal(await page.locator('body').getAttribute('data-audience'), 'developers');
   assert.match(await page.locator('.h1 .for-dev').innerText(), /кожному вашому пристрої/);
@@ -71,8 +80,12 @@ try {
     assert.ok(dimensions.page <= width, `Page overflows at ${width}: ${JSON.stringify(dimensions)}`);
     assert.ok(dimensions.cta <= width, `Header overflows at ${width}: ${JSON.stringify(dimensions)}`);
     if (process.env.SCREENSHOT_DIR && [1440, 390].includes(width)) {
-      await page.screenshot({ path: `${process.env.SCREENSHOT_DIR}/promo-ua-${width}.png`, fullPage: width === 1440 });
+      await page.screenshot({ path: `${process.env.SCREENSHOT_DIR}/promo-ua-${width}.png` });
     }
+    await page.locator('[data-language-set="en"]').click();
+    const englishWidth = await page.locator('.topbar__cta').evaluate(element => element.getBoundingClientRect().right);
+    assert.ok(englishWidth <= width, `English header overflows at ${width}: ${englishWidth}`);
+    await page.locator('[data-language-set="ua"]').click();
   }
   const untranslated = await page.evaluate(() => {
     const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
@@ -107,7 +120,7 @@ try {
   tab.on('pageerror', error => errors.push(error.message));
   await tab.goto(process.env.PROMO_URL || 'http://127.0.0.1:8765/');
   assert.equal(await tab.locator('html').getAttribute('lang'), 'uk');
-  await tab.locator('[data-language-switch]').selectOption('en');
+  await tab.locator('[data-language-set="en"]').click();
   assert.equal(await tab.locator('html').getAttribute('lang'), 'en');
   await blocked.close();
   assert.deepEqual(errors, []);

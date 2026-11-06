@@ -73,10 +73,10 @@
       <a href="#how">How it works</a>
     </nav>
     <div class="topbar__cta">
-      <select class="language-switch" aria-label="Language" data-language-switch hidden>
-        <option value="en" lang="en" title="English">EN</option>
-        <option value="ua" lang="uk" title="Українська">UA</option>
-      </select>
+      <div class="segmented language-switch" role="radiogroup" aria-label="Language" data-language-switch hidden>
+        <button type="button" role="radio" data-language-set="en" lang="en" aria-label="English" aria-checked="true">EN</button>
+        <button type="button" role="radio" data-language-set="ua" lang="uk" aria-label="Українська" aria-checked="false" tabindex="-1">UA</button>
+      </div>
       <button type="button" class="btn btn--secondary btn--sm" data-demo-open>Book a demo</button>
       <a class="btn btn--primary btn--sm" href="https://app.coding-lab.co">Get started</a>
     </div>
