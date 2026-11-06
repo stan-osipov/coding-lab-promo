@@ -1,0 +1,10 @@
+{
+  "name": "coding-lab-promo",
+  "private": true,
+  "scripts": {
+    "test": "node --test tests/*.test.cjs",
+    "test:browser": "node tests/browser.mjs",
+    "check": "node --check public/assets/app.js && node --check public/assets/locale-policy.js && node --check public/assets/i18n.js && node --check public/assets/ua.js"
+  },
+  "devDependencies": { "playwright": "1.65.0" }
+}

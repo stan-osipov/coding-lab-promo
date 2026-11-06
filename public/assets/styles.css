@@ -897,3 +897,23 @@ body.is-locked { overflow: hidden; }
   .topbar__inner { gap: 12px; }
   .topbar__cta .btn--secondary { display: none; }
 }
+
+/* The native selector keeps language names and keyboard behavior accessible. */
+.language-switch {
+  width: 58px; min-height: 36px; padding: 7px 8px;
+  border: 1px solid var(--border-faint); border-radius: 8px;
+  background: var(--surface, white); color: var(--ink);
+  font: inherit; font-size: 13px; cursor: pointer; flex-shrink: 0;
+}
+@media (max-width: 1120px) { .navlinks { display: none; } }
+@media (max-width: 620px) {
+  .topbar__inner { gap: 10px; }
+  .topbar__cta { gap: 8px; }
+  .topbar__cta .btn--secondary { display: none; }
+}
+@media (max-width: 360px) {
+  .brand { font-size: 14px; gap: 6px; }
+  .brand__mark { width: 26px; height: 26px; }
+  .topbar__cta .btn { padding-inline: 10px; }
+  .language-switch { width: 54px; }
+}

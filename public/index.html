@@ -9,6 +9,7 @@
 <meta name="theme-color" content="#131316">
 
 <meta property="og:type" content="website">
+<meta property="og:locale" content="en_US">
 <meta property="og:site_name" content="Coding Lab">
 <meta property="og:url" content="https://coding-lab.co/">
 <meta property="og:title" content="Coding Lab — the AI coding workspace for your company">
@@ -72,6 +73,10 @@
       <a href="#how">How it works</a>
     </nav>
     <div class="topbar__cta">
+      <select class="language-switch" aria-label="Language" data-language-switch hidden>
+        <option value="en" lang="en" title="English">EN</option>
+        <option value="ua" lang="uk" title="Українська">UA</option>
+      </select>
       <button type="button" class="btn btn--secondary btn--sm" data-demo-open>Book a demo</button>
       <a class="btn btn--primary btn--sm" href="https://app.coding-lab.co">Get started</a>
     </div>
@@ -862,6 +867,9 @@
   </div>
 </div>
 
+<script src="assets/locale-policy.js" defer></script>
+<script src="assets/ua.js" defer></script>
+<script src="assets/i18n.js" defer></script>
 <script src="assets/app.js" defer></script>
 </body>
 </html>

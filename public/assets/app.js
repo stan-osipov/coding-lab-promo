@@ -4,6 +4,8 @@
 (function () {
   'use strict';
 
+  var t = function (text) { return window.CodingLabI18n ? window.CodingLabI18n.t(text) : text; };
+
   var $  = function (sel, root) { return (root || document).querySelector(sel); };
   var $$ = function (sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); };
 
@@ -43,8 +45,8 @@
     var granted   = btn.getAttribute('data-granted') === 'true';
     var isDefault = btn.getAttribute('data-default') === 'true';
     var label = $('.grant__label', btn);
-    if (label) label.textContent = granted ? (isDefault ? 'Default' : 'Access') : 'Give access';
-    btn.title = granted ? 'Click to remove access' : 'Click to give access';
+    if (label) label.textContent = t(granted ? (isDefault ? 'Default' : 'Access') : 'Give access');
+    btn.title = t(granted ? 'Click to remove access' : 'Click to give access');
     btn.setAttribute('aria-pressed', granted ? 'true' : 'false');
   }
   $$('[data-matrix] .grant').forEach(function (btn) {
@@ -87,6 +89,15 @@
     });
   });
   wireArrowKeys(accountButtons);
+  function refreshTranslatedState() {
+    $$('[data-matrix] .grant').forEach(function (btn) { if (!btn.disabled) paintGrant(btn); });
+    var active = $('[data-accounts] [aria-checked="true"]');
+    if (active && activeAccountLabel) activeAccountLabel.textContent = active.getAttribute('data-account-name');
+    var firstName = $('[data-demo-firstname]');
+    if (firstName) firstName.textContent = firstName.dataset.name || t('there');
+  }
+  document.addEventListener('codinglab:languagechange', refreshTranslatedState);
+  refreshTranslatedState();
 
   /* -- 5 · Book a demo --------------------------------------------------- */
 
@@ -179,8 +190,9 @@
         /* TODO before launch: POST to the CRM or form endpoint here, and track
            the submit event. The prototype deliberately sends nothing. */
       }
-      var first = nameInput.value.trim().split(/\s+/)[0] || 'there';
-      $('[data-demo-firstname]').textContent = first;
+      var first = nameInput.value.trim().split(/\s+/)[0] || '';
+      $('[data-demo-firstname]').dataset.name = first;
+      $('[data-demo-firstname]').textContent = first || t('there');
       $('[data-demo-sent-to]').textContent = mailInput.value.trim();
       form.hidden = true;
       done.hidden = false;
