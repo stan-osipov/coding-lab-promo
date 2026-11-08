@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Coding Lab — the AI coding workspace for your company</title>
-<meta name="description" content="Manage every AI account and subscription your people use, run sessions on your own machines in one shared project setup, and see what it all adds up to across projects and people.">
+<meta name="description" content="Use corporate and personal Claude and Codex accounts alongside your own local models. Get stats for the whole team, monitor the work, track limits and spend, lock down environments and audit every prompt.">
 <link rel="canonical" href="https://coding-lab.co/">
 <meta name="theme-color" content="#131316">
 
@@ -56,6 +56,7 @@
     <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
     <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
     <symbol id="i-loader" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-6.22-8.56"/></symbol>
+    <symbol id="i-gauge" viewBox="0 0 24 24"><path d="m12 14 4-4M3.34 19a10 10 0 1 1 17.32 0"/></symbol>
     <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></symbol>
   </defs>
 </svg>
@@ -100,8 +101,8 @@
     </h1>
 
     <p class="lead hero__sub">
-      <span class="for-teams">Manage every AI account and subscription your people use, run sessions on your own machines in one shared project setup, and see what it all adds up to across projects and people.</span>
-      <span class="for-dev">Start a session on your laptop, follow it on your iPad, approve it from your phone. Use all your Claude and Codex accounts, and run on as many machines as you like, each with its own environment.</span>
+      <span class="for-teams">Use corporate and personal Claude and Codex accounts alongside your own local models. Get stats for the whole team, monitor the work, track limits and spend, lock down environments and audit every prompt.</span>
+      <span class="for-dev">Start a session on your laptop, follow it on your iPad, approve it from your phone. Use all your Claude and Codex accounts and your own local models, and run on as many machines as you like, each with its own environment.</span>
     </p>
 
     <div class="hero__actions">
@@ -110,40 +111,48 @@
     </div>
 
     <div class="benefits for-teams">
-      <a class="benefit" href="#teams">
-        <span class="tile tile--32 tile--accent"><svg class="ic ic-16" aria-hidden="true"><use href="#i-users"/></svg></span>
-        <span class="benefit__text"><span class="benefit__title">Every account, managed</span><span class="benefit__body">Team seats, contractors’ own plans and shared Codex, with access per person.</span></span>
+      <a class="benefit" href="#co-stats" style="--delay:0.10s">
+        <span class="benefit__header"><span class="benefit__icon"><svg class="ic ic-16" aria-hidden="true"><use href="#i-eye"/></svg></span><span class="benefit__text"><span class="benefit__title">Team stats<span class="benefit__arrow"><svg class="ic ic-16" aria-hidden="true"><use href="#i-arrow"/></svg></span></span><span class="benefit__body">Conversations, hours, tokens and output by project, person and subscription.</span></span></span>
+        <span class="benefit__preview"><span class="mini-bars" aria-hidden="true"><span style="height:32%;--delay:0.40s;background:oklch(0.64 0.15 55 / 0.30)"></span><span style="height:48%;--delay:0.46s;background:oklch(0.64 0.15 55 / 0.36)"></span><span style="height:40%;--delay:0.52s;background:oklch(0.64 0.15 55 / 0.42)"></span><span style="height:64%;--delay:0.58s;background:oklch(0.64 0.15 55 / 0.48)"></span><span style="height:56%;--delay:0.64s;background:oklch(0.64 0.15 55 / 0.54)"></span><span style="height:78%;--delay:0.70s;background:oklch(0.64 0.15 55 / 0.60)"></span><span style="height:70%;--delay:0.76s;background:oklch(0.64 0.15 55 / 0.66)"></span><span style="height:92%;--delay:0.82s;background:oklch(0.64 0.15 55 / 1.00)"></span><span style="height:84%;--delay:0.88s;background:oklch(0.64 0.15 55 / 1.00)"></span><span style="height:100%;--delay:0.94s;background:oklch(0.64 0.15 55 / 1.00)"></span></span></span>
       </a>
-      <a class="benefit" href="#teams">
-        <span class="tile tile--32 tile--accent"><svg class="ic ic-16" aria-hidden="true"><use href="#i-folder"/></svg></span>
-        <span class="benefit__text"><span class="benefit__title">One project setup</span><span class="benefit__body">Everyone works in the same checkout: repos, tools, environment and rules.</span></span>
+      <a class="benefit" href="#co-monitor" style="--delay:0.18s">
+        <span class="benefit__header"><span class="benefit__icon"><svg class="ic ic-16" aria-hidden="true"><use href="#i-monitor"/></svg></span><span class="benefit__text"><span class="benefit__title">Monitor the work<span class="benefit__arrow"><svg class="ic ic-16" aria-hidden="true"><use href="#i-arrow"/></svg></span></span><span class="benefit__body">See who is working on what right now, with which model and machine.</span></span></span>
+        <span class="benefit__preview"><span class="mini-rows"><span class="mini-row"><span class="dot is-pulsing"></span><span class="ellipsis">Anna · Billing settings page</span><span class="mini-meta">24m</span></span><span class="mini-row"><span class="dot is-pulsing"></span><span class="ellipsis">Alex · Push notification retries</span><span class="mini-meta">1h 05m</span></span><span class="mini-row"><span class="dot dot--waiting"></span><span class="ellipsis">Jean · Invoice PDF export</span><span class="mini-meta">waiting</span></span></span></span>
       </a>
-      <a class="benefit" href="#teams">
-        <span class="tile tile--32 tile--accent"><svg class="ic ic-16" aria-hidden="true"><use href="#i-eye"/></svg></span>
-        <span class="benefit__text"><span class="benefit__title">Live stats</span><span class="benefit__body">Conversations, hours, tokens and cost by project, person and subscription.</span></span>
+      <a class="benefit" href="#co-spend" style="--delay:0.26s">
+        <span class="benefit__header"><span class="benefit__icon"><svg class="ic ic-16" aria-hidden="true"><use href="#i-key"/></svg></span><span class="benefit__text"><span class="benefit__title">Cloud & local models<span class="benefit__arrow"><svg class="ic ic-16" aria-hidden="true"><use href="#i-arrow"/></svg></span></span><span class="benefit__body">Claude, Codex and your own models side by side, with limits and spend.</span></span></span>
+        <span class="benefit__preview"><span class="mini-models"><span class="mini-model" style="--delay:0.0s"><span class="mark mark--14" style="background:var(--accent)">C</span><span>Claude Team</span></span><span class="mini-model" style="--delay:1.5s"><span class="mark mark--14" style="background:var(--ink)">O</span><span>Codex</span></span><span class="mini-model" style="--delay:3.0s"><span class="mark mark--14" style="background:var(--green)">L</span><span>Qwen3 · local</span></span></span></span>
       </a>
-      <a class="benefit" href="#teams">
-        <span class="tile tile--32 tile--accent"><svg class="ic ic-16" aria-hidden="true"><use href="#i-shield"/></svg></span>
-        <span class="benefit__text"><span class="benefit__title">Controlled and safe</span><span class="benefit__body">Limited access per environment, and flagged chats that leak secrets.</span></span>
+      <a class="benefit" href="#co-env" style="--delay:0.34s">
+        <span class="benefit__header"><span class="benefit__icon"><svg class="ic ic-16" aria-hidden="true"><use href="#i-shield"/></svg></span><span class="benefit__text"><span class="benefit__title">Secure environments<span class="benefit__arrow"><svg class="ic ic-16" aria-hidden="true"><use href="#i-arrow"/></svg></span></span><span class="benefit__body">Locked templates for where developers work: tools, repos, network, secrets.</span></span></span>
+        <span class="benefit__preview"><span class="mini-rows"><span class="mini-row"><span class="mini-rule">repos · orbit-server</span><span class="mini-pop" style="--delay:0.6s"><span class="audit-tag audit-tag--good">Allowed</span></span></span><span class="mini-row"><span class="mini-rule">secrets · STRIPE_KEY</span><span class="mini-pop" style="--delay:0.85s"><span class="audit-tag audit-tag--good">Hidden</span></span></span><span class="mini-row"><span class="mini-rule">production db</span><span class="mini-pop" style="--delay:1.1s"><span class="audit-tag audit-tag--bad">Blocked</span></span></span></span></span>
+      </a>
+      <a class="benefit" href="#co-usage" style="--delay:0.42s">
+        <span class="benefit__header"><span class="benefit__icon"><svg class="ic ic-16" aria-hidden="true"><use href="#i-gauge"/></svg></span><span class="benefit__text"><span class="benefit__title">Usage audits<span class="benefit__arrow"><svg class="ic ic-16" aria-hidden="true"><use href="#i-arrow"/></svg></span></span><span class="benefit__body">Every session with its model, account, tokens and cost. Spot over-budget work.</span></span></span>
+        <span class="benefit__preview"><span class="mini-rows"><span class="mini-row"><span>Session · Opus</span><span class="mini-meta">1.4M / 1M tokens</span></span><span class="mini-budget"><span></span></span><span class="mini-pop mini-budget-note"><span class="audit-tag audit-tag--bad">Over session budget</span></span></span></span>
+      </a>
+      <a class="benefit" href="#co-prompts" style="--delay:0.50s">
+        <span class="benefit__header"><span class="benefit__icon"><svg class="ic ic-16" aria-hidden="true"><use href="#i-doc"/></svg></span><span class="benefit__text"><span class="benefit__title">Prompt audits<span class="benefit__arrow"><svg class="ic ic-16" aria-hidden="true"><use href="#i-arrow"/></svg></span></span><span class="benefit__body">Every prompt kept. Secrets and customer data flagged and masked for review.</span></span></span>
+        <span class="benefit__preview"><span class="mini-rows"><span class="mini-secret"><span>STRIPE_KEY=sk_live_</span><span class="mini-redact">••••••••••</span></span><span class="is-blinking"><span class="audit-tag audit-tag--bad">● Flagged for review</span></span></span></span>
       </a>
     </div>
 
     <div class="benefits for-dev">
-      <a class="benefit" href="#features">
-        <span class="tile tile--32 tile--accent"><svg class="ic ic-16" aria-hidden="true"><use href="#i-phone"/></svg></span>
-        <span class="benefit__text"><span class="benefit__title">Laptop, iPad, phone</span><span class="benefit__body">Your sessions follow you. Start on one device, check in and reply on another.</span></span>
+      <a class="benefit" href="#features" style="--delay:0.10s">
+        <span class="benefit__header"><span class="benefit__icon"><svg class="ic ic-16" aria-hidden="true"><use href="#i-phone"/></svg></span><span class="benefit__text"><span class="benefit__title">Laptop, iPad, phone<span class="benefit__arrow"><svg class="ic ic-16" aria-hidden="true"><use href="#i-arrow"/></svg></span></span><span class="benefit__body">Your sessions follow you. Start on one device, check in and reply on another.</span></span></span>
+        <span class="benefit__preview"><span class="mini-devices"><span class="mini-device mini-device--laptop" style="--delay:0.0s"><span class="dot is-pulsing"></span></span><span class="mini-device mini-device--tablet" style="--delay:0.15s"><span class="dot is-pulsing"></span></span><span class="mini-device mini-device--phone" style="--delay:0.3s"><span class="dot is-pulsing"></span></span><span>Same session, live</span></span></span>
       </a>
-      <a class="benefit" href="#features">
-        <span class="tile tile--32 tile--accent"><svg class="ic ic-16" aria-hidden="true"><use href="#i-key"/></svg></span>
-        <span class="benefit__text"><span class="benefit__title">Multiple AI accounts</span><span class="benefit__body">Use Claude and Codex plans side by side and switch when one hits its limit.</span></span>
+      <a class="benefit" href="#features" style="--delay:0.18s">
+        <span class="benefit__header"><span class="benefit__icon"><svg class="ic ic-16" aria-hidden="true"><use href="#i-key"/></svg></span><span class="benefit__text"><span class="benefit__title">Cloud and local models<span class="benefit__arrow"><svg class="ic ic-16" aria-hidden="true"><use href="#i-arrow"/></svg></span></span><span class="benefit__body">Claude and Codex plans side by side with local models on your own GPU.</span></span></span>
+        <span class="benefit__preview"><span class="mini-models"><span class="mini-model" style="--delay:0.0s"><span class="mark mark--14" style="background:var(--accent)">C</span><span>Claude Team</span></span><span class="mini-model" style="--delay:1.5s"><span class="mark mark--14" style="background:var(--ink)">O</span><span>Codex</span></span><span class="mini-model" style="--delay:3.0s"><span class="mark mark--14" style="background:var(--green)">L</span><span>Qwen3 · local</span></span></span></span>
       </a>
-      <a class="benefit" href="#features">
-        <span class="tile tile--32 tile--accent"><svg class="ic ic-16" aria-hidden="true"><use href="#i-server"/></svg></span>
-        <span class="benefit__text"><span class="benefit__title">Multiple machines</span><span class="benefit__body">Add your Mac minis and servers as workers. Close the laptop, the run goes on.</span></span>
+      <a class="benefit" href="#features" style="--delay:0.26s">
+        <span class="benefit__header"><span class="benefit__icon"><svg class="ic ic-16" aria-hidden="true"><use href="#i-server"/></svg></span><span class="benefit__text"><span class="benefit__title">Multiple machines<span class="benefit__arrow"><svg class="ic ic-16" aria-hidden="true"><use href="#i-arrow"/></svg></span></span><span class="benefit__body">Add your Mac minis and servers as workers. Close the laptop, the run goes on.</span></span></span>
+        <span class="benefit__preview"><span class="mini-rows"><span class="mini-row"><span class="dot is-pulsing"></span><span class="ellipsis">studio-mini-1</span><span class="mini-meta">macOS</span></span><span class="mini-row"><span class="dot is-pulsing"></span><span class="ellipsis">linux-build-01</span><span class="mini-meta">Ubuntu</span></span><span class="mini-row"><span class="dot dot--idle"></span><span class="ellipsis">home-mini</span><span class="mini-meta">idle</span></span></span></span>
       </a>
-      <a class="benefit" href="#features">
-        <span class="tile tile--32 tile--accent"><svg class="ic ic-16" aria-hidden="true"><use href="#i-layers"/></svg></span>
-        <span class="benefit__text"><span class="benefit__title">An environment per setup</span><span class="benefit__body">Each machine and project keeps its own tools, runtimes and rules.</span></span>
+      <a class="benefit" href="#features" style="--delay:0.34s">
+        <span class="benefit__header"><span class="benefit__icon"><svg class="ic ic-16" aria-hidden="true"><use href="#i-layers"/></svg></span><span class="benefit__text"><span class="benefit__title">An environment per setup<span class="benefit__arrow"><svg class="ic ic-16" aria-hidden="true"><use href="#i-arrow"/></svg></span></span><span class="benefit__body">Each machine and project keeps its own tools, runtimes and rules.</span></span></span>
+        <span class="benefit__preview"><span class="mini-rows"><span class="mini-row"><span class="mini-rule">orbit · node 22, pnpm</span><span class="mini-pop" style="--delay:0.6s"><span class="audit-tag audit-tag--good">Ready</span></span></span><span class="mini-row"><span class="mini-rule">ledger · python 3.12</span><span class="mini-pop" style="--delay:0.85s"><span class="audit-tag audit-tag--good">Ready</span></span></span><span class="mini-row"><span class="mini-rule">pulse · xcode 16</span><span class="mini-pop" style="--delay:1.1s"><span class="audit-tag audit-tag--good">Ready</span></span></span></span></span>
       </a>
     </div>
 
@@ -189,7 +198,7 @@
             <div class="grid-table__row">
               <span class="cell-person"><span class="avatar avatar--26" style="background:oklch(0.58 0.17 300)">OB</span><span class="cell-person__text"><span class="name ellipsis">Oleh Bondar</span><span class="role">Developer</span></span></span>
               <span class="cell-task"><span class="ellipsis">Offline sync feasibility</span><span class="proj">pulse-mobile</span></span>
-              <span class="cell-account"><span class="mark mark--16" style="background:oklch(0.62 0.16 45)">C</span><span class="ellipsis">Claude Team</span></span>
+              <span class="cell-account"><span class="mark mark--16" style="background:var(--green)">L</span><span class="ellipsis">Qwen3 · local</span></span>
               <span class="cell-machine">home-mini</span>
               <span class="cell-status"><span class="status status--idle"><span class="dot"></span>Pushed</span></span>
             </div>
@@ -284,6 +293,7 @@
           <span class="chip chip--active"><span class="mark mark--14" style="background:oklch(0.62 0.16 45)">C</span>Claude Max</span>
           <span class="chip"><span class="mark mark--14" style="background:oklch(0.7 0.12 55)">C</span>Claude Pro</span>
           <span class="chip"><span class="mark mark--14" style="background:oklch(0.3 0.01 240)">O</span>ChatGPT Pro</span>
+          <span class="chip"><span class="mark mark--14" style="background:var(--green)">L</span><span>Qwen3 · local</span></span>
         </span>
       </div>
 
@@ -303,83 +313,21 @@
     <div class="teams__header">
       <div class="teams__header-text">
         <span class="eyebrow eyebrow--light"><svg class="ic ic-14" aria-hidden="true"><use href="#i-building"/></svg>For companies</span>
-        <h2 class="h2">Every AI account, project and person, in one place you control.</h2>
-        <p class="lead lead--on-dark">Employees on team seats, contractors on their own subscriptions, shared Codex for everyone. Coding Lab handles the mix and shows you what it adds up to.</p>
+        <h2 class="h2">Know what your AI coding does, costs and touches.</h2>
+        <p class="lead lead--on-dark">Stats for the whole team, the work as it happens, models, limits and spend, secure environments, and a full audit trail of usage and prompts.</p>
       </div>
       <button type="button" class="btn btn--ghost-dark" data-demo-open>Book a demo<svg class="ic ic-16" aria-hidden="true"><use href="#i-arrow"/></svg></button>
     </div>
 
-    <!-- A · who uses which account -->
-    <div class="split">
-      <div class="split__text">
-        <strong class="h-sub">Manage who uses which AI account</strong>
-        <p>Mix personal and company subscriptions per person. Give access in a click, take it back just as fast, and set each person’s default.</p>
-        <ul class="ticks ticks--on-dark">
-          <li><svg class="ic ic-16 ic-check" aria-hidden="true"><use href="#i-check"/></svg>Contractors can bring their own subscription</li>
-          <li><svg class="ic ic-16 ic-check" aria-hidden="true"><use href="#i-check"/></svg>Employees share team seats without sharing passwords</li>
-          <li><svg class="ic ic-16 ic-check" aria-hidden="true"><use href="#i-check"/></svg>Usage and cost tracked per account and per person</li>
-        </ul>
-        <span class="split__hint">Click a cell to give or remove access.</span>
-      </div>
-      <div class="split__visual dark-card scroll-x">
-        <div class="matrix" data-matrix>
-          <div class="matrix__head">
-            <span class="col-label">PERSON</span>
-            <span class="matrix__acct"><span class="mark mark--30" style="background:oklch(0.7 0.12 55)">C</span><span class="matrix__acct-name">Claude Pro · Alex</span><span class="matrix__acct-kind">Personal</span></span>
-            <span class="matrix__acct"><span class="mark mark--30" style="background:oklch(0.62 0.16 45)">C</span><span class="matrix__acct-name">Claude Team</span><span class="matrix__acct-kind">5 seats</span></span>
-            <span class="matrix__acct"><span class="mark mark--30" style="background:oklch(0.3 0.01 240)">O</span><span class="matrix__acct-name">Codex Team</span><span class="matrix__acct-kind">ChatGPT Business</span></span>
-            <span class="matrix__acct"><span class="mark mark--30" style="background:oklch(0.55 0.12 250)">K</span><span class="matrix__acct-name">Claude API key</span><span class="matrix__acct-kind">Pay as you go</span></span>
-          </div>
-
-          <div class="matrix__row">
-            <span class="matrix__person"><span class="avatar avatar--32" style="background:oklch(0.6 0.14 30)">AR</span><span class="matrix__person-text"><span class="matrix__person-name">Alex Rivera</span><span class="role-tag role-tag--contractor">Contractor</span></span></span>
-            <span class="matrix__cell"><button type="button" class="grant" data-granted="true" data-default="true" disabled title="Alex brings his own subscription"><svg class="ic ic-12" aria-hidden="true"><use href="#i-check"/></svg><span class="grant__label">Own · default</span></button></span>
-            <span class="matrix__cell"><button type="button" class="grant" data-granted="false" data-default="false"><svg class="ic ic-12" aria-hidden="true"><use href="#i-check"/></svg><span class="grant__label">Give access</span></button></span>
-            <span class="matrix__cell"><button type="button" class="grant" data-granted="true" data-default="false"><svg class="ic ic-12" aria-hidden="true"><use href="#i-check"/></svg><span class="grant__label">Access</span></button></span>
-            <span class="matrix__cell"><button type="button" class="grant" data-granted="false" data-default="false"><svg class="ic ic-12" aria-hidden="true"><use href="#i-check"/></svg><span class="grant__label">Give access</span></button></span>
-          </div>
-
-          <div class="matrix__row">
-            <span class="matrix__person"><span class="avatar avatar--32" style="background:oklch(0.55 0.12 250)">JM</span><span class="matrix__person-text"><span class="matrix__person-name">Jean Moreau</span><span class="role-tag">Developer</span></span></span>
-            <span class="matrix__cell"><button type="button" class="grant grant--blank" data-personal="true" disabled title="Alex’s personal account" aria-label="Alex’s personal account, not available to Jean Moreau"></button></span>
-            <span class="matrix__cell"><button type="button" class="grant" data-granted="true" data-default="true"><svg class="ic ic-12" aria-hidden="true"><use href="#i-check"/></svg><span class="grant__label">Default</span></button></span>
-            <span class="matrix__cell"><button type="button" class="grant" data-granted="true" data-default="false"><svg class="ic ic-12" aria-hidden="true"><use href="#i-check"/></svg><span class="grant__label">Access</span></button></span>
-            <span class="matrix__cell"><button type="button" class="grant" data-granted="false" data-default="false"><svg class="ic ic-12" aria-hidden="true"><use href="#i-check"/></svg><span class="grant__label">Give access</span></button></span>
-          </div>
-
-          <div class="matrix__row">
-            <span class="matrix__person"><span class="avatar avatar--32" style="background:oklch(0.58 0.14 160)">AK</span><span class="matrix__person-text"><span class="matrix__person-name">Anna Kowalska</span><span class="role-tag role-tag--lead">Tech lead</span></span></span>
-            <span class="matrix__cell"><button type="button" class="grant grant--blank" data-personal="true" disabled title="Alex’s personal account" aria-label="Alex’s personal account, not available to Anna Kowalska"></button></span>
-            <span class="matrix__cell"><button type="button" class="grant" data-granted="true" data-default="true"><svg class="ic ic-12" aria-hidden="true"><use href="#i-check"/></svg><span class="grant__label">Default</span></button></span>
-            <span class="matrix__cell"><button type="button" class="grant" data-granted="true" data-default="false"><svg class="ic ic-12" aria-hidden="true"><use href="#i-check"/></svg><span class="grant__label">Access</span></button></span>
-            <span class="matrix__cell"><button type="button" class="grant" data-granted="true" data-default="false"><svg class="ic ic-12" aria-hidden="true"><use href="#i-check"/></svg><span class="grant__label">Access</span></button></span>
-          </div>
-
-          <div class="matrix__row">
-            <span class="matrix__person"><span class="avatar avatar--32" style="background:oklch(0.58 0.17 300)">OB</span><span class="matrix__person-text"><span class="matrix__person-name">Oleh Bondar</span><span class="role-tag">Developer</span></span></span>
-            <span class="matrix__cell"><button type="button" class="grant grant--blank" data-personal="true" disabled title="Alex’s personal account" aria-label="Alex’s personal account, not available to Oleh Bondar"></button></span>
-            <span class="matrix__cell"><button type="button" class="grant" data-granted="true" data-default="true"><svg class="ic ic-12" aria-hidden="true"><use href="#i-check"/></svg><span class="grant__label">Default</span></button></span>
-            <span class="matrix__cell"><button type="button" class="grant" data-granted="true" data-default="false"><svg class="ic ic-12" aria-hidden="true"><use href="#i-check"/></svg><span class="grant__label">Access</span></button></span>
-            <span class="matrix__cell"><button type="button" class="grant" data-granted="false" data-default="false"><svg class="ic ic-12" aria-hidden="true"><use href="#i-check"/></svg><span class="grant__label">Give access</span></button></span>
-          </div>
-
-          <div class="matrix__row">
-            <span class="matrix__person"><span class="avatar avatar--32" style="background:oklch(0.6 0.12 200)">MC</span><span class="matrix__person-text"><span class="matrix__person-name">Mia Chen</span><span class="role-tag">Designer</span></span></span>
-            <span class="matrix__cell"><button type="button" class="grant grant--blank" data-personal="true" disabled title="Alex’s personal account" aria-label="Alex’s personal account, not available to Mia Chen"></button></span>
-            <span class="matrix__cell"><button type="button" class="grant" data-granted="false" data-default="false"><svg class="ic ic-12" aria-hidden="true"><use href="#i-check"/></svg><span class="grant__label">Give access</span></button></span>
-            <span class="matrix__cell"><button type="button" class="grant" data-granted="true" data-default="true"><svg class="ic ic-12" aria-hidden="true"><use href="#i-check"/></svg><span class="grant__label">Default</span></button></span>
-            <span class="matrix__cell"><button type="button" class="grant" data-granted="false" data-default="false"><svg class="ic ic-12" aria-hidden="true"><use href="#i-check"/></svg><span class="grant__label">Give access</span></button></span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- B · what the spend turns into -->
-    <div class="stack" style="gap:18px">
+<p class="sample-notice">Illustrative workspace · sample data throughout</p>
+<nav class="company-index" aria-label="Company benefits"><a href="#co-stats"><span>01</span>Team stats</a><a href="#co-monitor"><span>02</span>Monitor the work</a><a href="#co-spend"><span>03</span>Cloud & local models, spend</a><a href="#co-env"><span>04</span>Secure environments</a><a href="#co-usage"><span>05</span>Usage audits</a><a href="#co-prompts"><span>06</span>Prompt audits</a></nav>
+<div class="company-blocks">
+    <!-- 01 · Team stats -->
+    <section class="company-block" id="co-stats" aria-labelledby="co-stats-title">
       <div class="stats__header">
         <div class="stats__header-text">
-          <strong class="h-sub">See what your AI spend turns into</strong>
-          <p>Conversations, hours, tokens and cost by project, by person and by subscription, updated live. A peek at the workspace overview:</p>
+          <span class="step-num">01</span><h3 class="h3" id="co-stats-title">Get stats for the whole team</h3>
+          <p>Conversations, AI hours, tokens and pushed changes by project, by person and by subscription, updated live.</p>
         </div>
         <span class="segmented segmented--dark" role="tablist" aria-label="Group the overview by">
           <button type="button" role="tab" id="tab-projects" aria-selected="true" aria-controls="panel-projects" data-stats-tab="projects">By project</button>
@@ -528,54 +476,109 @@
           </div>
         </div>
       </div>
+    </section>
+    <section class="company-block" id="co-monitor" aria-labelledby="co-monitor-title">
+<header class="company-block__header"><span class="step-num">02</span><h3 class="h3" id="co-monitor-title">Monitor the work as it happens</h3><p>See who is working on what, the prompt they are running, the model and account they chose, and the machine doing the work.</p></header>
+<div class="dark-card"><div class="audit-head"><strong class="live-label"><span class="dot is-pulsing"></span>Live</strong><span>7 sessions running · 3 waiting for a reply</span></div><div class="scroll-x"><table class="audit-table monitor-table"><thead><tr><th scope="col">PERSON</th><th scope="col">CURRENT PROMPT</th><th scope="col">MODEL · ACCOUNT</th><th scope="col">MACHINE</th><th scope="col">TIME</th><th scope="col">STATUS</th></tr></thead><tbody><tr><td><span class="cell-person"><span class="avatar avatar--26" style="background:var(--green)">AK</span><span class="stack"><span>Anna Kowalska</span><span class="audit-detail">orbit-web</span></span></span></td><td><span class="audit-prompt" title="Split the billing settings page into tabs and keep the URL state"><span aria-hidden="true">“</span><span>Split the billing settings page into tabs and keep the URL state</span><span aria-hidden="true">”</span></span></td><td><span class="stack"><span>Opus</span><span class="audit-detail">Claude Team</span></span></td><td><span class="mono">studio-mini-1</span></td><td>24m</td><td><span class="status status--running"><span class="dot is-pulsing"></span>Running</span></td></tr>
+<tr><td><span class="cell-person"><span class="avatar avatar--26" style="background:var(--accent)">AR</span><span class="stack"><span>Alex Rivera</span><span class="audit-detail">orbit-web</span></span></span></td><td><span class="audit-prompt" title="Add retries to the push notification worker"><span aria-hidden="true">“</span><span>Add retries to the push notification worker</span><span aria-hidden="true">”</span></span></td><td><span class="stack"><span>Sonnet</span><span class="audit-detail">Own Claude Pro</span></span></td><td><span class="mono">studio-mini-1</span></td><td>1h 05m</td><td><span class="status status--running"><span class="dot is-pulsing"></span>Running</span></td></tr>
+<tr><td><span class="cell-person"><span class="avatar avatar--26" style="background:var(--proj-orbit)">JM</span><span class="stack"><span>Jean Moreau</span><span class="audit-detail">ledger-app</span></span></span></td><td><span class="audit-prompt" title="Export invoices as PDF with the same layout as CSV"><span aria-hidden="true">“</span><span>Export invoices as PDF with the same layout as CSV</span><span aria-hidden="true">”</span></span></td><td><span class="stack"><span>GPT-5 Codex</span><span class="audit-detail">Codex Team</span></span></td><td><span class="mono">linux-build-01</span></td><td>12m</td><td><span class="status status--waiting"><span class="dot "></span>Waiting</span></td></tr>
+<tr><td><span class="cell-person"><span class="avatar avatar--26" style="background:var(--proj-pulse)">OB</span><span class="stack"><span>Oleh Bondar</span><span class="audit-detail">pulse-mobile</span></span></span></td><td><span class="audit-prompt" title="Check if offline sync works with the current API"><span aria-hidden="true">“</span><span>Check if offline sync works with the current API</span><span aria-hidden="true">”</span></span></td><td><span class="stack"><span>Qwen3 Coder</span><span class="audit-detail">Local · gpu-server</span></span></td><td><span class="mono">home-mini</span></td><td>41m</td><td><span class="status status--running"><span class="dot is-pulsing"></span>Running</span></td></tr>
+<tr><td><span class="cell-person"><span class="avatar avatar--26" style="background:var(--proj-orbit)">MC</span><span class="stack"><span>Mia Chen</span><span class="audit-detail">orbit-web</span></span></span></td><td><span class="audit-prompt" title="Redesign the onboarding checklist from the Figma notes"><span aria-hidden="true">“</span><span>Redesign the onboarding checklist from the Figma notes</span><span aria-hidden="true">”</span></span></td><td><span class="stack"><span>Sonnet</span><span class="audit-detail">Codex Team</span></span></td><td><span class="mono">studio-mini-1</span></td><td>8m</td><td><span class="status status--waiting"><span class="dot "></span>Waiting</span></td></tr>
+</tbody></table></div></div>
+    </section>
+    <section class="company-block" id="co-spend" aria-labelledby="co-spend-title">
+<header class="company-block__header"><span class="step-num">03</span><h3 class="h3" id="co-spend-title">Use cloud and local models, and track limits and spend</h3><p>Corporate and personal Claude and Codex accounts, API keys and models on your own GPU, all in one place. See limits, costs and which models the team actually uses.</p></header>
+<div class="spend-grid"><div class="dark-card spend-card"><h4>Usage limits</h4><div class="limit-row"><div class="spread"><span>Claude Team</span><span class="mono">71%</span></div><span class="meter"><span style="width:71%;background:var(--accent-light)"></span></span><span class="audit-detail">Resets in 2 days</span></div><div class="limit-row"><div class="spread"><span>Claude Pro · Alex</span><span class="mono">93%</span></div><span class="meter"><span style="width:93%;background:#dc7764"></span></span><span class="audit-detail">Near the limit · resets tomorrow</span></div><div class="limit-row"><div class="spread"><span>Codex Team</span><span class="mono">46%</span></div><span class="meter"><span style="width:46%;background:var(--green)"></span></span><span class="audit-detail">Resets in 4 days</span></div><div class="limit-row"><div class="spread"><span>Claude API key</span><span class="mono">22%</span></div><span class="meter"><span style="width:22%;background:#739ed0"></span></span><span class="audit-detail">$110 of $500 monthly cap</span></div><div class="limit-row"><div class="spread"><span>Qwen3 Coder · local</span><span class="mono">38%</span></div><span class="meter"><span style="width:38%;background:var(--green)"></span></span><span class="audit-detail">Company GPU server · no usage limit, 38% busy</span></div></div><div class="dark-card spend-card"><h4>Spend this month</h4><div class="spend-total"><strong>$3,412</strong><span class="audit-detail">forecast $4,050 · budget $4,500</span></div><div class="spend-segments" aria-hidden="true"><span style="width:55%;background:var(--accent-light)"></span><span style="width:22%;background:#9b9ca0"></span><span style="width:17%;background:#739ed0"></span><span style="width:6%;background:var(--amber)"></span><span style="width:0%;background:var(--green)"></span></div><div class="spread"><span class="spend-name"><span class="legend__swatch" style="background:var(--accent-light)"></span>Claude Team seats</span><span class="mono">$1,875</span></div><div class="spread"><span class="spend-name"><span class="legend__swatch" style="background:#9b9ca0"></span>Codex Team seats</span><span class="mono">$750</span></div><div class="spread"><span class="spend-name"><span class="legend__swatch" style="background:#739ed0"></span>Claude API key</span><span class="mono">$587</span></div><div class="spread"><span class="spend-name"><span class="legend__swatch" style="background:var(--amber)"></span>Contractors’ own plans</span><span class="mono">$200</span></div><div class="spread"><span class="spend-name"><span class="legend__swatch" style="background:var(--green)"></span>Local models · own GPU</span><span class="mono">$0</span></div></div><div class="dark-card spend-card"><h4>Models in use</h4><span class="audit-detail">Share of tokens</span><div class="limit-row"><div class="spread"><span>Opus</span><span class="mono">36%</span></div><span class="meter"><span style="width:36%;background:var(--accent)"></span></span></div><div class="limit-row"><div class="spread"><span>Sonnet</span><span class="mono">24%</span></div><span class="meter"><span style="width:24%;background:var(--accent-light)"></span></span></div><div class="limit-row"><div class="spread"><span>GPT-5 Codex</span><span class="mono">20%</span></div><span class="meter"><span style="width:20%;background:#9b9ca0"></span></span></div><div class="limit-row"><div class="spread"><span>Qwen3 · local</span><span class="mono">14%</span></div><span class="meter"><span style="width:14%;background:var(--green)"></span></span></div><div class="limit-row"><div class="spread"><span>Haiku</span><span class="mono">6%</span></div><span class="meter"><span style="width:6%;background:#739ed0"></span></span></div><p class="model-insight">14% of tokens now run on the local model, at no extra cost.</p></div></div>    <!-- A · who uses which account -->
+    <div class="split">
+      <div class="split__text">
+        <strong class="h-sub">Who uses which account</strong>
+        <p>Mix personal and company subscriptions per person. Give access in a click, take it back just as fast, and set each person’s default.</p>
+        <ul class="ticks ticks--on-dark">
+          <li><svg class="ic ic-16 ic-check" aria-hidden="true"><use href="#i-check"/></svg>Contractors can bring their own subscription</li>
+          <li><svg class="ic ic-16 ic-check" aria-hidden="true"><use href="#i-check"/></svg>Employees share team seats without sharing passwords</li>
+          <li><svg class="ic ic-16 ic-check" aria-hidden="true"><use href="#i-check"/></svg>Usage and cost tracked per account and per person</li>
+        </ul>
+        <span class="split__hint">Click a cell to give or remove access.</span>
+      </div>
+      <div class="split__visual dark-card scroll-x">
+        <div class="matrix" data-matrix>
+          <div class="matrix__head">
+            <span class="col-label">PERSON</span>
+            <span class="matrix__acct"><span class="mark mark--30" style="background:oklch(0.7 0.12 55)">C</span><span class="matrix__acct-name">Claude Pro · Alex</span><span class="matrix__acct-kind">Personal</span></span>
+            <span class="matrix__acct"><span class="mark mark--30" style="background:oklch(0.62 0.16 45)">C</span><span class="matrix__acct-name">Claude Team</span><span class="matrix__acct-kind">5 seats</span></span>
+            <span class="matrix__acct"><span class="mark mark--30" style="background:oklch(0.3 0.01 240)">O</span><span class="matrix__acct-name">Codex Team</span><span class="matrix__acct-kind">ChatGPT Business</span></span>
+            <span class="matrix__acct"><span class="mark mark--30" style="background:oklch(0.55 0.12 250)">K</span><span class="matrix__acct-name">Claude API key</span><span class="matrix__acct-kind">Pay as you go</span></span>
+            <span class="matrix__acct"><span class="mark mark--30" style="background:var(--green)">L</span><span class="matrix__acct-name">Qwen3 Coder</span><span class="matrix__acct-kind">Local · company GPU</span></span>
+          </div>
+
+          <div class="matrix__row">
+            <span class="matrix__person"><span class="avatar avatar--32" style="background:oklch(0.6 0.14 30)">AR</span><span class="matrix__person-text"><span class="matrix__person-name">Alex Rivera</span><span class="role-tag role-tag--contractor">Contractor</span></span></span>
+            <span class="matrix__cell"><button type="button" class="grant" data-granted="true" data-default="true" disabled title="Alex brings his own subscription"><svg class="ic ic-12" aria-hidden="true"><use href="#i-check"/></svg><span class="grant__label">Own · default</span></button></span>
+            <span class="matrix__cell"><button type="button" class="grant" data-granted="false" data-default="false"><svg class="ic ic-12" aria-hidden="true"><use href="#i-check"/></svg><span class="grant__label">Give access</span></button></span>
+            <span class="matrix__cell"><button type="button" class="grant" data-granted="true" data-default="false"><svg class="ic ic-12" aria-hidden="true"><use href="#i-check"/></svg><span class="grant__label">Access</span></button></span>
+            <span class="matrix__cell"><button type="button" class="grant" data-granted="false" data-default="false"><svg class="ic ic-12" aria-hidden="true"><use href="#i-check"/></svg><span class="grant__label">Give access</span></button></span>
+            <span class="matrix__cell"><button type="button" class="grant" data-granted="true" data-default="false"><svg class="ic ic-16" aria-hidden="true"><use href="#i-check"/></svg><span class="grant__label">Access</span></button></span>
+          </div>
+
+          <div class="matrix__row">
+            <span class="matrix__person"><span class="avatar avatar--32" style="background:oklch(0.55 0.12 250)">JM</span><span class="matrix__person-text"><span class="matrix__person-name">Jean Moreau</span><span class="role-tag">Developer</span></span></span>
+            <span class="matrix__cell"><button type="button" class="grant grant--blank" data-personal="true" disabled title="Alex’s personal account" aria-label="Alex’s personal account, not available to Jean Moreau"></button></span>
+            <span class="matrix__cell"><button type="button" class="grant" data-granted="true" data-default="true"><svg class="ic ic-12" aria-hidden="true"><use href="#i-check"/></svg><span class="grant__label">Default</span></button></span>
+            <span class="matrix__cell"><button type="button" class="grant" data-granted="true" data-default="false"><svg class="ic ic-12" aria-hidden="true"><use href="#i-check"/></svg><span class="grant__label">Access</span></button></span>
+            <span class="matrix__cell"><button type="button" class="grant" data-granted="false" data-default="false"><svg class="ic ic-12" aria-hidden="true"><use href="#i-check"/></svg><span class="grant__label">Give access</span></button></span>
+            <span class="matrix__cell"><button type="button" class="grant" data-granted="true" data-default="false"><svg class="ic ic-16" aria-hidden="true"><use href="#i-check"/></svg><span class="grant__label">Access</span></button></span>
+          </div>
+
+          <div class="matrix__row">
+            <span class="matrix__person"><span class="avatar avatar--32" style="background:oklch(0.58 0.14 160)">AK</span><span class="matrix__person-text"><span class="matrix__person-name">Anna Kowalska</span><span class="role-tag role-tag--lead">Tech lead</span></span></span>
+            <span class="matrix__cell"><button type="button" class="grant grant--blank" data-personal="true" disabled title="Alex’s personal account" aria-label="Alex’s personal account, not available to Anna Kowalska"></button></span>
+            <span class="matrix__cell"><button type="button" class="grant" data-granted="true" data-default="true"><svg class="ic ic-12" aria-hidden="true"><use href="#i-check"/></svg><span class="grant__label">Default</span></button></span>
+            <span class="matrix__cell"><button type="button" class="grant" data-granted="true" data-default="false"><svg class="ic ic-12" aria-hidden="true"><use href="#i-check"/></svg><span class="grant__label">Access</span></button></span>
+            <span class="matrix__cell"><button type="button" class="grant" data-granted="true" data-default="false"><svg class="ic ic-12" aria-hidden="true"><use href="#i-check"/></svg><span class="grant__label">Access</span></button></span>
+            <span class="matrix__cell"><button type="button" class="grant" data-granted="true" data-default="false"><svg class="ic ic-16" aria-hidden="true"><use href="#i-check"/></svg><span class="grant__label">Access</span></button></span>
+          </div>
+
+          <div class="matrix__row">
+            <span class="matrix__person"><span class="avatar avatar--32" style="background:oklch(0.58 0.17 300)">OB</span><span class="matrix__person-text"><span class="matrix__person-name">Oleh Bondar</span><span class="role-tag">Developer</span></span></span>
+            <span class="matrix__cell"><button type="button" class="grant grant--blank" data-personal="true" disabled title="Alex’s personal account" aria-label="Alex’s personal account, not available to Oleh Bondar"></button></span>
+            <span class="matrix__cell"><button type="button" class="grant" data-granted="true" data-default="true"><svg class="ic ic-12" aria-hidden="true"><use href="#i-check"/></svg><span class="grant__label">Default</span></button></span>
+            <span class="matrix__cell"><button type="button" class="grant" data-granted="true" data-default="false"><svg class="ic ic-12" aria-hidden="true"><use href="#i-check"/></svg><span class="grant__label">Access</span></button></span>
+            <span class="matrix__cell"><button type="button" class="grant" data-granted="false" data-default="false"><svg class="ic ic-12" aria-hidden="true"><use href="#i-check"/></svg><span class="grant__label">Give access</span></button></span>
+            <span class="matrix__cell"><button type="button" class="grant" data-granted="true" data-default="false"><svg class="ic ic-16" aria-hidden="true"><use href="#i-check"/></svg><span class="grant__label">Access</span></button></span>
+          </div>
+
+          <div class="matrix__row">
+            <span class="matrix__person"><span class="avatar avatar--32" style="background:oklch(0.6 0.12 200)">MC</span><span class="matrix__person-text"><span class="matrix__person-name">Mia Chen</span><span class="role-tag">Designer</span></span></span>
+            <span class="matrix__cell"><button type="button" class="grant grant--blank" data-personal="true" disabled title="Alex’s personal account" aria-label="Alex’s personal account, not available to Mia Chen"></button></span>
+            <span class="matrix__cell"><button type="button" class="grant" data-granted="false" data-default="false"><svg class="ic ic-12" aria-hidden="true"><use href="#i-check"/></svg><span class="grant__label">Give access</span></button></span>
+            <span class="matrix__cell"><button type="button" class="grant" data-granted="true" data-default="true"><svg class="ic ic-12" aria-hidden="true"><use href="#i-check"/></svg><span class="grant__label">Default</span></button></span>
+            <span class="matrix__cell"><button type="button" class="grant" data-granted="false" data-default="false"><svg class="ic ic-12" aria-hidden="true"><use href="#i-check"/></svg><span class="grant__label">Give access</span></button></span>
+            <span class="matrix__cell"><button type="button" class="grant" data-granted="false" data-default="false"><svg class="ic ic-16" aria-hidden="true"><use href="#i-check"/></svg><span class="grant__label">Give access</span></button></span>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <!-- C · templates and visibility -->
-    <div class="pair">
-      <div class="pair__card">
-        <div class="stack" style="gap:8px">
-          <h3>Checkout templates</h3>
-          <p>Describe the environment once, and every session runs inside it. Limited access protects both your code and your privacy.</p>
-        </div>
-        <div class="inner-dark">
-          <div class="inner-dark__head"><svg class="ic ic-13" aria-hidden="true"><use href="#i-folder"/></svg>template · web-backend</div>
-          <div class="kv"><span class="kv__k">Environment</span><span class="kv__v">node 22 · postgres 16 · redis</span></div>
-          <div class="kv"><span class="kv__k">Tools</span><span class="kv__v">git, pnpm, supabase-cli</span></div>
-          <div class="kv"><span class="kv__k">Access</span><span class="kv__v">repo: web-backend · no prod secrets</span></div>
-        </div>
-      </div>
-      <div class="pair__card">
-        <div class="stack" style="gap:8px">
-          <h3>The work, visible as it happens</h3>
-          <p>Developers used to code in isolation for days. Now you see the prompts they write, the models they pick and the tokens they use.</p>
-        </div>
-        <div class="inner-dark">
-          <div class="prompt-table__head"><span>PERSON · PROMPT</span><span>MODEL</span><span style="text-align:right">TOKENS</span></div>
-          <div class="prompt-table__row">
-            <span class="prompt-table__person"><span class="avatar avatar--24" style="background:oklch(0.58 0.14 160)">SR</span><span class="prompt-table__text"><span class="name">Sofia Reyes</span><span class="prompt ellipsis">Fix the flaky checkout tests</span></span></span>
-            <span class="prompt-table__model">Codex</span><span class="prompt-table__tokens">1.2M</span>
-          </div>
-          <div class="prompt-table__row">
-            <span class="prompt-table__person"><span class="avatar avatar--24" style="background:oklch(0.58 0.17 300)">KS</span><span class="prompt-table__text"><span class="name">Kenji Sato</span><span class="prompt ellipsis">Review PR #412 copy changes</span></span></span>
-            <span class="prompt-table__model">Claude Sonnet</span><span class="prompt-table__tokens">310k</span>
-          </div>
-          <div class="prompt-table__row">
-            <span class="prompt-table__person"><span class="avatar avatar--24" style="background:oklch(0.6 0.12 40)">PN</span><span class="prompt-table__text"><span class="name">Priya Nair</span><span class="prompt ellipsis">Offline sync feasibility</span></span></span>
-            <span class="prompt-table__model">Claude Opus</span><span class="prompt-table__tokens">840k</span>
-          </div>
-        </div>
-      </div>
-    </div>
 
-    <!-- D · safety -->
-    <div class="safety">
-      <span class="safety__icon"><svg class="ic ic-20" aria-hidden="true"><use href="#i-shield"/></svg></span>
-      <div class="safety__text">
-        <strong>Catch risky habits before they become incidents</strong>
-        <span>Every session transcript is stored, so conversations where someone pastes secret keys, private company documents or other confidential information can be flagged for review.</span>
-      </div>
-      <span class="safety__flag"><span class="dot"></span>API key shared in chat · flagged</span>
-    </div>
+    </section>
+<section class="company-block company-block--split" id="co-env" aria-labelledby="co-env-title"><div><header class="company-block__header"><span class="step-num">04</span><h3 class="h3" id="co-env-title">Configure secure environments for every developer</h3><p>Define once where the work happens: the machine, the tools, the repositories and what the assistant may reach. Developers and contractors get exactly that, nothing more.</p></header><ul class="ticks ticks--on-dark"><li><svg class="ic ic-16" aria-hidden="true"><use href="#i-check"/></svg>Only the repositories and tools the template allows</li><li><svg class="ic ic-16" aria-hidden="true"><use href="#i-check"/></svg>Secrets stay in the environment, out of the chat</li><li><svg class="ic ic-16" aria-hidden="true"><use href="#i-check"/></svg>Code stays on machines you own</li></ul></div><div class="dark-card environment"><div class="audit-head"><svg class="ic ic-16" aria-hidden="true"><use href="#i-folder"/></svg><span><span class="stack"><strong>Template · orbit-backend</strong><span class="audit-detail">Used by 6 people · 2 contractors</span></span></span><span class="audit-tag audit-tag--good">Locked</span></div><div class="environment-row"><span class="audit-detail">Machine</span><span class="mono">studio-mini-1 · linux-build-01</span><span class="audit-tag audit-tag--neutral">Your hardware</span></div><div class="environment-row"><span class="audit-detail">Repositories</span><span class="mono">orbit-server, orbit-api</span><span class="audit-tag audit-tag--neutral">Read & write</span></div><div class="environment-row"><span class="audit-detail">Tools</span><span class="mono">node 22 · pnpm · docker · psql</span><span class="audit-tag audit-tag--neutral">Allow-list</span></div><div class="environment-row"><span class="audit-detail">Network</span><span class="mono">github.com, npmjs.org, staging only</span><span class="audit-tag audit-tag--warn">Restricted</span></div><div class="environment-row"><span class="audit-detail">Secrets</span><span class="mono">STAGING_DB_URL, STRIPE_TEST_KEY</span><span class="audit-tag audit-tag--good">Hidden from chat</span></div><div class="environment-row"><span class="audit-detail">Production</span><span class="mono">no access</span><span class="audit-tag audit-tag--bad">Blocked</span></div></div></section>    <section class="company-block" id="co-usage" aria-labelledby="co-usage-title">
+<header class="company-block__header"><span class="step-num">05</span><h3 class="h3" id="co-usage-title">Audit usage</h3><p>Every session is logged with its person, model, account, tokens and cost. Spot over-budget sessions, expensive model choices and unusual usage, and export it for finance.</p></header>
+<div class="dark-card"><div class="audit-head"><strong>Usage log</strong><span>this week · 412 sessions</span><button class="btn btn--ghost-dark btn--sm" type="button" data-export-usage>Export CSV</button></div><div class="scroll-x"><table class="audit-table usage-table"><thead><tr><th scope="col">TIME</th><th scope="col">PERSON</th><th scope="col">SESSION</th><th scope="col">MODEL · ACCOUNT</th><th scope="col">TOKENS</th><th scope="col">COST</th><th scope="col">NOTE</th></tr></thead><tbody><tr><td>10:42</td><td><span class="cell-person"><span class="avatar avatar--26" style="background:var(--green)">AK</span>Anna Kowalska</span></td><td><span class="stack"><span>Billing settings page</span><span class="audit-detail">orbit-web</span></span></td><td><span class="stack"><span>Opus</span><span class="audit-detail">Claude Team</span></span></td><td>1.4M</td><td>$18.40</td><td><span class="audit-tag audit-tag--bad">Over session budget</span></td></tr>
+<tr><td>10:18</td><td><span class="cell-person"><span class="avatar avatar--26" style="background:var(--green)">AK</span>Anna Kowalska</span></td><td><span class="stack"><span>Refactor billing permissions</span><span class="audit-detail">orbit-web</span></span></td><td><span class="stack"><span>Opus</span><span class="audit-detail">Claude Team</span></span></td><td>980k</td><td>$12.10</td><td><span class="audit-tag audit-tag--warn">Above usual for Anna</span></td></tr>
+<tr><td>09:56</td><td><span class="cell-person"><span class="avatar avatar--26" style="background:var(--proj-pulse)">OB</span>Oleh Bondar</span></td><td><span class="stack"><span>Offline sync feasibility</span><span class="audit-detail">pulse-mobile</span></span></td><td><span class="stack"><span>Qwen3 Coder</span><span class="audit-detail">Qwen3 · local</span></span></td><td>840k</td><td>$0.00</td><td><span class="audit-tag audit-tag--good">Local model $0</span></td></tr>
+<tr><td>09:31</td><td><span class="cell-person"><span class="avatar avatar--26" style="background:var(--accent)">AR</span>Alex Rivera</span></td><td><span class="stack"><span>Push notification service</span><span class="audit-detail">orbit-web</span></span></td><td><span class="stack"><span>Sonnet</span><span class="audit-detail">Own Claude Pro</span></span></td><td>310k</td><td>—</td><td><span class="audit-tag audit-tag--neutral">paid by Alex</span></td></tr>
+<tr><td>09:12</td><td><span class="cell-person"><span class="avatar avatar--26" style="background:var(--proj-orbit)">JM</span>Jean Moreau</span></td><td><span class="stack"><span>Invoice PDF export</span><span class="audit-detail">ledger-app</span></span></td><td><span class="stack"><span>GPT-5 Codex</span><span class="audit-detail">Codex Team</span></span></td><td>420k</td><td>$3.60</td><td><span class="audit-tag audit-tag--neutral">Normal</span></td></tr>
+</tbody></table></div></div>
+    </section>
+    <section class="company-block" id="co-prompts" aria-labelledby="co-prompts-title">
+<header class="company-block__header"><span class="step-num">06</span><h3 class="h3" id="co-prompts-title">Audit prompts</h3><p>Every prompt is kept. Prompts that share secret keys, customer data or private documents are flagged automatically, with the sensitive part masked, so you can review and coach the person.</p></header>
+<div class="dark-card"><div class="audit-head"><strong>Prompt review</strong><div class="prompt-filters" role="group" aria-label="Filter prompt reviews"><button type="button" data-prompt-filter="all" aria-pressed="true" tabindex="0">All</button><button type="button" data-prompt-filter="flagged" aria-pressed="false" tabindex="-1">Flagged</button><button type="button" data-prompt-filter="reviewed" aria-pressed="false" tabindex="-1">Reviewed</button></div></div><div data-prompt-reviews><article class="prompt-review" data-prompt-state="flagged"><span class="avatar avatar--32" style="background:var(--accent)">AR</span><div class="prompt-review__body"><div class="prompt-review__meta"><strong>Alex Rivera</strong><span>orbit-web</span><span aria-hidden="true">·</span><span>Push notification service</span><span class="mono">10:42</span></div><p class="prompt-review__text"><span>Use this Stripe key to test the checkout:</span> <mark class="masked masked--bad">sk_live_••••••••••</mark></p></div><span class="audit-tag audit-tag--bad">Flagged · secret</span></article>
+<article class="prompt-review" data-prompt-state="flagged"><span class="avatar avatar--32" style="background:var(--green)">AK</span><div class="prompt-review__body"><div class="prompt-review__meta"><strong>Anna Kowalska</strong><span>orbit-web</span><span aria-hidden="true">·</span><span>Billing settings page</span><span class="mono">10:18</span></div><p class="prompt-review__text"><span>Look up this customer:</span> <mark class="masked masked--bad">[email hidden] [phone hidden]</mark></p></div><span class="audit-tag audit-tag--bad">Flagged · personal data</span></article>
+<article class="prompt-review" data-prompt-state="reviewed"><span class="avatar avatar--32" style="background:var(--proj-orbit)">JM</span><div class="prompt-review__body"><div class="prompt-review__meta"><strong>Jean Moreau</strong><span>ledger-app</span><span aria-hidden="true">·</span><span>Invoice PDF export</span><span class="mono">09:56</span></div><p class="prompt-review__text"><span>Summarise the attached contract:</span> <mark class="masked masked--neutral">[private document]</mark></p></div><span class="audit-tag audit-tag--neutral">Reviewed · approved</span></article>
+<article class="prompt-review" data-prompt-state="clear"><span class="avatar avatar--32" style="background:var(--proj-pulse)">OB</span><div class="prompt-review__body"><div class="prompt-review__meta"><strong>Oleh Bondar</strong><span>pulse-mobile</span><span aria-hidden="true">·</span><span>Offline sync feasibility</span><span class="mono">09:31</span></div><p class="prompt-review__text"><span>Check offline sync against staging only. Do not touch production.</span> </p></div><span class="audit-tag audit-tag--good">No issues</span></article>
+</div></div>
+    </section>
+</div>
   </div>
 </section>
 
@@ -592,10 +595,10 @@
     <div class="feature">
       <div class="feature__text">
         <span class="step-num">01</span>
-        <h3 class="h3">Use every AI account and subscription, and switch any time</h3>
-        <p class="lead lead--muted">Connect Claude and Codex accounts on any plan, personal or company. Use several at once, and switch per conversation when one hits its limit or another model fits the task better.</p>
+        <h3 class="h3">Use every AI account, subscription and local model</h3>
+        <p class="lead lead--muted">Connect Claude and Codex accounts on any plan, personal or company, plus your own models running on company GPU servers. Use them side by side, and switch per conversation when one hits its limit or another fits the task better.</p>
         <ul class="ticks">
-          <li><svg class="ic ic-16 ic-check" aria-hidden="true"><use href="#i-check"/></svg>Combine personal and team subscriptions</li>
+          <li><svg class="ic ic-16 ic-check" aria-hidden="true"><use href="#i-check"/></svg>Personal, corporate and local models in one list</li>
           <li><svg class="ic ic-16 ic-check" aria-hidden="true"><use href="#i-check"/></svg>Pick the account and model for each conversation</li>
           <li><svg class="ic ic-16 ic-check" aria-hidden="true"><use href="#i-check"/></svg>See usage per account, so nobody runs dry mid-task</li>
         </ul>
@@ -627,6 +630,11 @@
               <span class="account__text"><span class="account__name">API key · Company</span><span class="account__plan">Pay as you go · Claude</span></span>
               <span class="account__usage"><span class="account__meter"><span style="width:12%"></span></span><span class="account__use-label">12% used this week</span></span>
               <span class="account__radio"></span>
+            </button>
+            <button type="button" class="account" role="radio" aria-checked="false" data-account-name="Qwen3 Coder · local" tabindex="-1">
+              <span class="mark mark--36" style="background:var(--green)">L</span>
+              <span class="account__text"><span class="account__name">Qwen3 Coder · local</span><span class="account__plan">Company GPU server · no usage limit</span></span>
+              <span class="account__usage"><span class="account__meter account__meter--local"><span style="width:100%"></span></span><span class="account__use-label">own hardware · no limit</span></span><span class="account__radio"></span>
             </button>
           </div>
           <div class="card-foot">

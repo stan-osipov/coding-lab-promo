@@ -54,6 +54,71 @@ try {
   assert.equal(await page.locator('body').getAttribute('data-audience'), 'developers');
   assert.match(await page.locator('.h1 .for-dev').innerText(), /кожному вашому пристрої/);
 
+  // Handoff v2: linked benefits, working sample audits and local models.
+  await page.locator('[data-language-set="en"]').click();
+  await page.locator('[data-audience-set="teams"]').click();
+  assert.equal(await page.locator('.benefits.for-teams .benefit').count(), 6);
+  assert.equal(await page.locator('.benefits.for-dev .benefit').count(), 4);
+  for (const link of await page.locator('.benefits.for-teams .benefit').all()) {
+    const target = await link.getAttribute('href');
+    assert.equal(await page.locator(target).count(), 1, `Missing benefit target ${target}`);
+  }
+  await page.locator('[data-prompt-filter="flagged"]').click();
+  assert.equal(await page.locator('[data-prompt-state]:visible').count(), 2);
+  await page.keyboard.press('ArrowRight');
+  assert.equal(await page.locator('[data-prompt-filter="reviewed"]').getAttribute('aria-pressed'), 'true');
+  assert.equal(await page.locator('[data-prompt-state]:visible').count(), 1);
+  await page.locator('[data-language-set="ua"]').click();
+  assert.equal(await page.locator('[data-prompt-filter="reviewed"]').getAttribute('aria-pressed'), 'true');
+  assert.equal(await page.locator('[data-prompt-state]:visible').count(), 1);
+  assert.match(await page.locator('[data-prompt-state]:visible').innerText(), /Перевірено · схвалено/);
+  await page.locator('[data-prompt-filter="all"]').click();
+  assert.equal(await page.locator('[data-prompt-state]:visible').count(), 4);
+  await page.locator('[data-accounts] .account').last().click();
+  assert.equal(await page.locator('[data-active-account]').textContent(), 'Qwen3 Coder · локальна');
+  await page.locator('[data-language-set="en"]').click();
+  assert.equal(await page.locator('[data-active-account]').textContent(), 'Qwen3 Coder · local');
+  const localGrant = page.locator('.matrix__row').first().locator('.grant').last();
+  assert.equal(await localGrant.getAttribute('data-granted'), 'true');
+  await localGrant.click();
+  assert.equal(await localGrant.getAttribute('aria-pressed'), 'false');
+  await localGrant.click();
+  assert.equal(await localGrant.getAttribute('aria-pressed'), 'true');
+  const downloadEvent = page.waitForEvent('download');
+  await page.locator('[data-export-usage]').click();
+  const download = await downloadEvent;
+  assert.equal(download.suggestedFilename(), 'coding-lab-sample-usage.csv');
+  const stream = await download.createReadStream();
+  let csv = '';
+  for await (const chunk of stream) csv += chunk.toString('utf8');
+  assert.equal(csv.trim().split('\r\n').length, 6);
+  assert.match(csv, /"Over session budget"/);
+  assert.match(csv, /Qwen3 Coder/);
+  assert.match(csv, /"\$0.00"/);
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  assert.equal(await page.locator('.benefit').first().evaluate(el => getComputedStyle(el).animationName), 'none');
+  assert.equal(await page.locator('.mini-redact').evaluate(el => getComputedStyle(el).animationName), 'none');
+  for (const width of [1440, 1024, 768, 390, 320]) {
+    await page.setViewportSize({ width, height: 1000 });
+    for (const lang of ['en', 'ua']) {
+      await page.locator(`[data-language-set="${lang}"]`).click();
+      for (const audience of ['teams', 'developers']) {
+        await page.locator(`[data-audience-set="${audience}"]`).click();
+        const visible = audience === 'teams' ? 'for-teams' : 'for-dev';
+        assert.equal(await page.locator(`.preview.${visible}`).isVisible(), true);
+        assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), `${lang}/${audience} overflows at ${width}`);
+        const cards = await page.locator(`.benefits.${visible} .benefit`).evaluateAll(els => els.map(el => ({ x: el.offsetLeft, y: el.offsetTop })));
+        if (width === 1440) assert.equal(new Set(cards.map(c => c.y)).size, audience === 'teams' ? 2 : 1);
+        if (process.env.SCREENSHOT_DIR && [1440, 390].includes(width)) {
+          await page.evaluate(() => scrollTo(0, 0));
+          await page.screenshot({ path: `${process.env.SCREENSHOT_DIR}/benefits-${lang}-${audience}-${width}.png` });
+        }
+      }
+    }
+  }
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.locator('[data-language-set="ua"]').click();
+
   // Read/write only the synthetic preference in this isolated context.
   const app = await context.newPage();
   await app.goto('https://app.coding-lab.co/');

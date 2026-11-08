@@ -99,6 +99,42 @@
   document.addEventListener('codinglab:languagechange', refreshTranslatedState);
   refreshTranslatedState();
 
+  /* Sample prompt audits: filter only the invented rows on this page. */
+  var promptFilters = $$('[data-prompt-filter]');
+  promptFilters.forEach(function (button) {
+    button.addEventListener('click', function () {
+      var filter = button.getAttribute('data-prompt-filter');
+      promptFilters.forEach(function (other) {
+        var selected = other === button;
+        other.setAttribute('aria-pressed', selected ? 'true' : 'false');
+        other.tabIndex = selected ? 0 : -1;
+      });
+      $$('[data-prompt-state]').forEach(function (row) {
+        row.hidden = filter !== 'all' && row.getAttribute('data-prompt-state') !== filter;
+      });
+    });
+  });
+  wireArrowKeys(promptFilters);
+
+  /* Export the displayed sample rows, in the selected language. No API call. */
+  var exportUsage = $('[data-export-usage]');
+  if (exportUsage) exportUsage.addEventListener('click', function () {
+    var csv = $$('.usage-table tr').map(function (row) {
+      return $$('th, td', row).map(function (cell) {
+        var value = cell.innerText.trim().replace(/\s+/g, ' ');
+        return '"' + value.replace(/"/g, '""') + '"';
+      }).join(',');
+    }).join('\r\n');
+    var url = URL.createObjectURL(new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8' }));
+    var link = document.createElement('a');
+    link.href = url;
+    link.download = 'coding-lab-sample-usage.csv';
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+  });
+
   /* -- 5 · Book a demo --------------------------------------------------- */
 
   /* Demo booking is closed for now: every "Book a demo" button opens a short

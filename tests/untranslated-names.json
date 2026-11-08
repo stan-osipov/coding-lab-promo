@@ -69,5 +69,19 @@
   "EN",
   "UA",
   "English",
-  "Українська"
+  "Українська",
+  "L",
+  "STRIPE_KEY=sk_live_",
+  "macOS",
+  "Ubuntu",
+  "orbit · node 22, pnpm",
+  "ledger · python 3.12",
+  "pulse · xcode 16",
+  "GPT-5 Codex",
+  "Qwen3 Coder",
+  "studio-mini-1 · linux-build-01",
+  "orbit-server, orbit-api",
+  "node 22 · pnpm · docker · psql",
+  "STAGING_DB_URL, STRIPE_TEST_KEY",
+  "sk_live_••••••••••"
 ]

@@ -144,3 +144,23 @@ and layouts from 320 to 1440 pixels. Set `SCREENSHOT_DIR` to save previews.
 The companion app has detector integration tests plus cookie/account precedence
 unit tests. Keep the two repositories’ cookie name, scope and detector order in
 sync when changing the language policy.
+
+## Landing handoff v2
+
+The hero now links to six company benefits: team stats, live work, cloud and
+local models, secure environments, usage audits and prompt audits. Developer
+benefits retain their own product preview. Each benefit has a small HTML/CSS
+preview and staggered entrance; reduced motion disables all animation. Check
+lists use soft rows with round check badges. All new copy has Ukrainian text.
+
+The company previews use invented data. Prompt filters operate on those sample
+rows; Export CSV downloads only the five visible sample usage records, in the
+selected language, as `coding-lab-sample-usage.csv`. The local-model access
+column and account selector are decorative and reset on reload like the other
+preview controls. Demo booking and language-sharing behavior are unchanged.
+
+Before a site launch, confirm the v2 product claims: local/company models and
+GPU load, subscription limits, spend forecast/budget, session token budgets,
+usage CSV export, template network restrictions, secrets kept out of chat,
+production blocking, automatic prompt masking/flagging, and prompt review.
+The landing-page interactions do not implement these application capabilities.
