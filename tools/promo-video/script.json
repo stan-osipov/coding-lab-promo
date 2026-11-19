@@ -1,0 +1,80 @@
+{
+  "_comment": [
+    "The promo video's narration, scene by scene. This file is the script:",
+    "edit the text here and re-render, no code changes needed.",
+    "",
+    "  id        matches a <section data-scene=\"id\"> in storyboard.html",
+    "  say       what the voice reads. `[[slnc N]]` inserts an N-millisecond",
+    "            pause; it is macOS `say` markup, not spoken.",
+    "  caption   the same line as plain text, for the .srt subtitle file",
+    "  lead      silence before the line starts, seconds (the scene animates in)",
+    "  tail      silence after the line ends, seconds (the scene holds)",
+    "",
+    "Scene length is lead + spoken length + tail, measured at render time, so",
+    "the picture always follows the voice rather than a hand-written duration."
+  ],
+  "voice": { "name": "Samantha", "rate": 168 },
+  "fps": 30,
+  "width": 1200,
+  "height": 675,
+  "scale": 1.6,
+  "crossfade": 0.45,
+  "scenes": [
+    {
+      "id": "intro",
+      "say": "We all work on more than one project.",
+      "caption": "We all work on more than one project.",
+      "lead": 1.1,
+      "tail": 1.0
+    },
+    {
+      "id": "machines",
+      "say": "You keep working on your own machine. [[slnc 260]] And you can add another, with its own credentials and its own level of access.",
+      "caption": "You keep working on your own machine. And you can add another, with its own credentials and its own level of access.",
+      "lead": 0.5,
+      "tail": 1.1
+    },
+    {
+      "id": "connect",
+      "say": "Connect the machines, sign in with your accounts, [[slnc 200]] and begin work.",
+      "caption": "Connect the machines, sign in with your accounts, and begin work.",
+      "lead": 0.5,
+      "tail": 1.0
+    },
+    {
+      "id": "project",
+      "say": "Create a project and pick a template. [[slnc 240]] It runs on the machine you choose, using the accounts signed in there.",
+      "caption": "Create a project and pick a template. It runs on the machine you choose, using the accounts signed in there.",
+      "lead": 0.5,
+      "tail": 1.0
+    },
+    {
+      "id": "hub",
+      "say": "Coding Lab is the one interface over all of it. [[slnc 300]] All your machines. [[slnc 240]] All your projects. [[slnc 240]] All your A I accounts, [[slnc 160]] and the ones you choose to share.",
+      "caption": "Coding Lab is the one interface over all of it. All your machines. All your projects. All your AI accounts, and the ones you choose to share.",
+      "lead": 0.6,
+      "tail": 1.2
+    },
+    {
+      "id": "team",
+      "say": "Work alongside your teammates, [[slnc 200]] and see the numbers: how you work, and how far the work has come.",
+      "caption": "Work alongside your teammates, and see the numbers: how you work, and how far the work has come.",
+      "lead": 0.5,
+      "tail": 1.1
+    },
+    {
+      "id": "structure",
+      "say": "And keep it all in order, [[slnc 200]] with projects, sub-projects, and everything that belongs with them.",
+      "caption": "And keep it all in order, with projects, sub-projects, and everything that belongs with them.",
+      "lead": 0.5,
+      "tail": 1.0
+    },
+    {
+      "id": "cta",
+      "say": "Coding Lab. [[slnc 380]] Start at coding dash lab dot co.",
+      "caption": "Coding Lab. Start at coding-lab.co",
+      "lead": 0.7,
+      "tail": 1.8
+    }
+  ]
+}

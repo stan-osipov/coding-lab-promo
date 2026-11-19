@@ -1,1 +1,6 @@
 node_modules/
+tools/promo-video/.work/
+tools/promo-video/.work-render.log
+tools/promo-video/stills/
+tools/promo-video/*.mp4
+tools/promo-video/*.srt

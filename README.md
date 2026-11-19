@@ -22,6 +22,7 @@ public/
   favicon.*, icon-*.png, apple-touch-icon.png, site.webmanifest
 tools/
   og-image.html     the source the social preview is rendered from
+  promo-video/      the narrated promo film, rendered from HTML (its own README)
 ```
 
 All asset paths in `index.html` are **relative**, so the folder works served
@@ -76,6 +77,20 @@ Motion (the pulsing status dots, the blinking "working…") is turned off under
   that way means moving these files up out of `public/`; a host with a
   configurable publish directory (Netlify, Cloudflare Pages, Vercel) can point
   at `public/` as it stands.
+
+## The promo video
+
+`tools/promo-video/` renders a narrated ~53-second film of the product from the
+same stylesheet and icons as this page — no video editor, no screenshots:
+
+```sh
+node tools/promo-video/render.mjs --out /tmp/coding-lab-promo.mp4
+```
+
+The words live in `tools/promo-video/script.json`; change a line and re-render
+and the scene re-times itself around the new narration. The names and figures
+in it are the page's own invented ones, so the "Sample content" note above
+applies to the video too. See `tools/promo-video/README.md`.
 
 ## Regenerating the social preview
 

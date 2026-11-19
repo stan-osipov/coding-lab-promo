@@ -1,0 +1,410 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Coding Lab — promo video storyboard</title>
+
+<!--
+  The scenes of the promo video, one <section data-scene> each.
+
+  Nothing here plays on its own. render.mjs opens this page, pauses every
+  animation, and steps each scene's local clock frame by frame, so the picture
+  is deterministic and lands exactly on the narration in script.json.
+
+  Open it in a browser to check a scene by hand: ?scene=hub&t=4.2 shows the
+  `hub` scene frozen 4.2 seconds in.
+
+  Animation delays (--d) are written against the measured narration, so a scene
+  whose words change wants its delays nudged. render.mjs prints each scene's
+  measured length to check against.
+-->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="/public/assets/styles.css">
+<link rel="stylesheet" href="storyboard.css">
+</head>
+<body>
+
+<!-- The icon sprite is the landing page's own; it is lifted from index.html at
+     load time so the video can never drift from the site's icon set. -->
+<div id="sprite" hidden></div>
+
+<div class="stage">
+  <div class="stage__grid"></div>
+
+  <!-- ============================================================ 1 · intro -->
+  <section class="scene" data-scene="intro">
+    <div class="brandLock brandLock--sm v-drop" style="--d:0.10s">
+      <img src="/public/favicon.svg" alt=""><span>Coding Lab</span>
+    </div>
+    <div class="spacer"></div>
+    <h1 class="vTitle v-rise" style="--d:0.55s">We all work on more than one project.</h1>
+    <div class="spacer"></div>
+    <div class="projRow">
+      <span class="projChip v-rise" style="--d:1.85s"><span class="mark" style="background:var(--proj-orbit)">O</span>orbit-web <small>· web client</small></span>
+      <span class="projChip v-rise" style="--d:2.00s"><span class="mark" style="background:var(--proj-ledger)">L</span>ledger-app <small>· billing</small></span>
+      <span class="projChip v-rise" style="--d:2.15s"><span class="mark" style="background:var(--proj-pulse)">P</span>pulse-mobile <small>· iOS</small></span>
+    </div>
+  </section>
+
+  <!-- ========================================================= 2 · machines -->
+  <section class="scene" data-scene="machines">
+    <div class="scene__head">
+      <span class="vKicker v-fade" style="--d:0.15s">Your machines</span>
+      <h2 class="vHead v-rise" style="--d:0.25s">Add a machine, with its own access</h2>
+    </div>
+    <div class="scene__body">
+      <div class="twoUp">
+
+        <div class="mcard v-lift" style="--d:0.35s">
+          <div class="mcard__top">
+            <span class="mcard__icon"><svg class="ic ic-20"><use href="#i-monitor"/></svg></span>
+            <span class="machine-row__text">
+              <span class="mcard__name">studio-mini-1</span>
+              <span class="mcard__os">macOS 15 · your own machine</span>
+            </span>
+            <span class="mcard__state"><span class="status status--running"><span class="dot is-pulsing"></span>Online</span></span>
+          </div>
+          <div class="mcard__rows">
+            <div class="mrow"><span class="mark" style="background:oklch(0.62 0.16 45)">C</span>Claude Team<span class="mrow__meta">signed in</span></div>
+            <div class="mrow"><span class="mark" style="background:var(--ink)">O</span>Codex<span class="mrow__meta">signed in</span></div>
+            <div class="mrow"><span class="mark" style="background:var(--green)">L</span>Qwen3 · local<span class="mrow__meta">on this GPU</span></div>
+          </div>
+          <div class="mcard__foot">
+            <svg class="ic ic-14"><use href="#i-shield"/></svg>
+            <span class="tag tag--good">Full access</span>
+          </div>
+        </div>
+
+        <div class="mcard v-right" style="--d:3.00s;--t:0.8s">
+          <div class="mcard__top">
+            <span class="mcard__icon"><svg class="ic ic-20"><use href="#i-server"/></svg></span>
+            <span class="machine-row__text">
+              <span class="mcard__name">linux-build-01</span>
+              <span class="mcard__os">Ubuntu 24.04 · shared worker</span>
+            </span>
+            <span class="mcard__state"><span class="status status--running"><span class="dot is-pulsing"></span>Online</span></span>
+          </div>
+          <div class="mcard__rows">
+            <div class="mrow v-rise" style="--d:4.30s"><span class="mark" style="background:oklch(0.7 0.12 55)">C</span>Own Claude Pro<span class="mrow__meta">own credentials</span></div>
+            <div class="mrow v-rise" style="--d:4.45s"><span class="mark" style="background:var(--ink)">O</span>Codex Team<span class="mrow__meta">company seat</span></div>
+            <div class="mrow v-rise" style="--d:4.60s"><span class="mark" style="background:oklch(0.55 0.12 250)">R</span>orbit-server<span class="mrow__meta">repo scope</span></div>
+          </div>
+          <div class="mcard__foot">
+            <svg class="ic ic-14"><use href="#i-shield"/></svg>
+            <span class="tag tag--warn v-pop" style="--d:5.40s">Contractor · limited</span>
+            <span class="tag tag--mute v-pop" style="--d:5.60s">No production</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================== 3 · connect -->
+  <section class="scene" data-scene="connect">
+    <div class="scene__head">
+      <span class="vKicker v-fade" style="--d:0.10s">Connect and sign in</span>
+      <h2 class="vHead v-rise" style="--d:0.20s">Your machines, on one account</h2>
+    </div>
+    <div class="scene__body" style="flex-direction:column;align-items:center">
+      <div class="wire">
+        <div class="node v-left" style="--d:0.30s">
+          <svg class="ic"><use href="#i-monitor"/></svg>
+          <span class="node__name">studio-mini-1</span>
+          <span class="node__meta">macOS · your machine</span>
+        </div>
+        <div style="display:flex;align-items:center;padding:0 18px">
+          <span class="link v-growx" style="--d:0.75s;--t:0.6s;flex:1">
+            <i class="linkDot" style="right:-4px"></i>
+          </span>
+          <div class="hubNode v-pop" style="--d:0.55s;margin:0 18px">
+            <img src="/public/favicon.svg" alt="">
+            <strong>Coding Lab</strong>
+          </div>
+          <span class="link link--r v-growx" style="--d:0.95s;--t:0.6s;flex:1">
+            <i class="linkDot" style="left:-4px"></i>
+          </span>
+        </div>
+        <div class="node v-right" style="--d:0.30s">
+          <svg class="ic"><use href="#i-server"/></svg>
+          <span class="node__name">linux-build-01</span>
+          <span class="node__meta">Ubuntu · shared worker</span>
+        </div>
+      </div>
+
+      <div class="signins">
+        <span class="signin v-rise" style="--d:1.95s"><span class="mark" style="background:oklch(0.62 0.16 45)">C</span>Claude Team<svg class="ic ic-15 ic-check"><use href="#i-check"/></svg></span>
+        <span class="signin v-rise" style="--d:2.25s"><span class="mark" style="background:var(--ink)">O</span>Codex<svg class="ic ic-15 ic-check"><use href="#i-check"/></svg></span>
+        <span class="signin v-rise" style="--d:2.55s"><span class="mark" style="background:var(--green)">L</span>Qwen3 · local<svg class="ic ic-15 ic-check"><use href="#i-check"/></svg></span>
+      </div>
+
+      <div class="v-pop" style="--d:3.55s;margin-top:28px">
+        <span class="tag tag--accent" style="height:34px;padding:0 16px;font-size:14px;border-radius:10px">
+          <svg class="ic ic-15"><use href="#i-spark"/></svg>Ready to work
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================== 4 · project -->
+  <section class="scene" data-scene="project">
+    <div class="scene__head">
+      <span class="vKicker v-fade" style="--d:0.10s">New project</span>
+      <h2 class="vHead v-rise" style="--d:0.20s">Pick a template, choose a machine</h2>
+    </div>
+    <div class="scene__body">
+      <div class="winWrap">
+        <div class="window v-lift" style="--d:0.30s">
+          <div class="window__bar">
+            <span class="light light--r"></span><span class="light light--y"></span><span class="light light--g"></span>
+            <span class="window__title">new project · orbit-web</span>
+          </div>
+          <div class="tmplGrid">
+            <div class="tmpl tmpl--picked v-rise" style="--d:0.55s">
+              <svg class="ic"><use href="#i-layers"/></svg>
+              <strong>Web app</strong><small>node 22 · pnpm · vite</small>
+            </div>
+            <div class="tmpl v-rise" style="--d:0.70s">
+              <svg class="ic"><use href="#i-server"/></svg>
+              <strong>API service</strong><small>python 3.12 · uv</small>
+            </div>
+            <div class="tmpl v-rise" style="--d:0.85s">
+              <svg class="ic"><use href="#i-phone"/></svg>
+              <strong>iOS app</strong><small>xcode 16 · swift 6</small>
+            </div>
+          </div>
+          <div class="runOn v-drop" style="--d:3.05s">
+            <span><svg class="ic ic-14" style="display:inline;vertical-align:-2px;color:var(--text-muted)"><use href="#i-monitor"/></svg>
+              Runs on <b>studio-mini-1</b></span>
+            <span class="sep v-fade" style="--d:3.55s"></span>
+            <span class="v-fade" style="--d:3.55s">Using
+              <span class="mark" style="background:oklch(0.62 0.16 45);display:inline-grid;vertical-align:-4px">C</span> <b>Claude Team</b>
+              and <span class="mark" style="background:var(--ink);display:inline-grid;vertical-align:-4px">O</span> <b>Codex</b>
+            </span>
+            <span class="tag tag--good v-pop" style="margin-left:auto;--d:3.85s">Environment ready</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================== 5 · hub -->
+  <section class="scene" data-scene="hub">
+    <div class="scene__head">
+      <span class="vKicker v-fade" style="--d:0.15s">One interface</span>
+      <h2 class="vHead v-rise" style="--d:0.25s">Every machine, project and account</h2>
+    </div>
+    <div class="scene__body">
+      <div class="winWrap winWrap--wide">
+        <div class="window v-lift" style="--d:0.40s">
+          <div class="window__bar">
+            <span class="light light--r"></span><span class="light light--y"></span><span class="light light--g"></span>
+            <span class="window__title">coding-lab.co · your workspace</span>
+          </div>
+          <div class="hubCols">
+
+            <div class="hubCol">
+              <div class="hubCol__head v-fade" style="--d:3.30s">
+                <svg class="ic"><use href="#i-server"/></svg><strong>Machines</strong><span class="n">3</span>
+              </div>
+              <div class="hubItem v-rise" style="--d:3.50s"><span class="hubDot"></span><span class="ellipsis">studio-mini-1</span><span class="hubItem__meta">macOS</span></div>
+              <div class="hubItem v-rise" style="--d:3.70s"><span class="hubDot"></span><span class="ellipsis">linux-build-01</span><span class="hubItem__meta">Ubuntu</span></div>
+              <div class="hubItem v-rise" style="--d:3.90s"><span class="hubDot hubDot--idle"></span><span class="ellipsis">home-mini</span><span class="hubItem__meta">idle</span></div>
+            </div>
+
+            <div class="hubCol">
+              <div class="hubCol__head v-fade" style="--d:4.70s">
+                <svg class="ic"><use href="#i-folder"/></svg><strong>Projects</strong><span class="n">3</span>
+              </div>
+              <div class="hubItem v-rise" style="--d:4.90s"><span class="mark" style="background:var(--proj-orbit)">O</span><span class="ellipsis">orbit-web</span><span class="hubItem__meta">4 running</span></div>
+              <div class="hubItem v-rise" style="--d:5.10s"><span class="mark" style="background:var(--proj-ledger)">L</span><span class="ellipsis">ledger-app</span><span class="hubItem__meta">2 running</span></div>
+              <div class="hubItem v-rise" style="--d:5.30s"><span class="mark" style="background:var(--proj-pulse)">P</span><span class="ellipsis">pulse-mobile</span><span class="hubItem__meta">1 running</span></div>
+            </div>
+
+            <div class="hubCol">
+              <div class="hubCol__head v-fade" style="--d:6.00s">
+                <svg class="ic"><use href="#i-key"/></svg><strong>AI accounts</strong><span class="n">3</span>
+              </div>
+              <div class="hubItem v-rise" style="--d:6.20s">
+                <span class="mark" style="background:oklch(0.62 0.16 45)">C</span><span class="ellipsis">Claude Team</span>
+                <span class="hubItem__meta"><span class="tag tag--accent v-pop" style="--d:7.90s">Shared</span></span>
+              </div>
+              <div class="hubItem v-rise" style="--d:6.40s">
+                <span class="mark" style="background:var(--ink)">O</span><span class="ellipsis">Codex Team</span>
+                <span class="hubItem__meta"><span class="tag tag--accent v-pop" style="--d:8.15s">Shared</span></span>
+              </div>
+              <div class="hubItem v-rise" style="--d:6.60s">
+                <span class="mark" style="background:var(--green)">L</span><span class="ellipsis">Qwen3 · local</span>
+                <span class="hubItem__meta">private</span>
+              </div>
+            </div>
+
+          </div>
+          <div class="card-foot v-fade" style="--d:8.40s">
+            <svg class="ic ic-15"><use href="#i-users"/></svg>
+            <span>Shared accounts are available to <strong>everyone you invite</strong> — on any machine they are allowed to use.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================= 6 · team -->
+  <section class="scene" data-scene="team">
+    <div class="scene__head">
+      <span class="vKicker v-fade" style="--d:0.10s">Together, and measured</span>
+      <h2 class="vHead v-rise" style="--d:0.20s">Your team, and how the work is going</h2>
+    </div>
+    <div class="scene__body">
+      <div class="winWrap winWrap--wide">
+        <div class="window v-lift" style="--d:0.25s">
+          <div class="window__bar">
+            <span class="light light--r"></span><span class="light light--y"></span><span class="light light--g"></span>
+            <span class="window__title">northwind studio · this week</span>
+          </div>
+          <div class="teamGrid">
+
+            <div>
+              <div class="secHead v-fade" style="--d:0.45s">Working now</div>
+              <div class="trow v-rise" style="--d:0.60s">
+                <span class="trow__who"><span class="avatar avatar--26" style="background:oklch(0.58 0.14 160)">AK</span>Anna Kowalska</span>
+                <span class="trow__task"><span class="ellipsis">Billing settings page</span><span class="proj">orbit-web</span></span>
+                <span class="status status--running"><span class="dot is-pulsing"></span>Running</span>
+              </div>
+              <div class="trow v-rise" style="--d:0.85s">
+                <span class="trow__who"><span class="avatar avatar--26" style="background:oklch(0.6 0.14 30)">AR</span>Alex Rivera</span>
+                <span class="trow__task"><span class="ellipsis">Push notification retries</span><span class="proj">orbit-web</span></span>
+                <span class="status status--running"><span class="dot is-pulsing"></span>Running</span>
+              </div>
+              <div class="trow v-rise" style="--d:1.10s">
+                <span class="trow__who"><span class="avatar avatar--26" style="background:oklch(0.55 0.12 250)">JM</span>Jean Moreau</span>
+                <span class="trow__task"><span class="ellipsis">Invoice PDF export</span><span class="proj">ledger-app</span></span>
+                <span class="status status--waiting"><span class="dot"></span>Waiting</span>
+              </div>
+              <div class="trow v-rise" style="--d:1.35s">
+                <span class="trow__who"><span class="avatar avatar--26" style="background:oklch(0.58 0.17 300)">OB</span>Oleh Bondar</span>
+                <span class="trow__task"><span class="ellipsis">Offline sync</span><span class="proj">pulse-mobile</span></span>
+                <span class="status status--running"><span class="dot is-pulsing"></span>Running</span>
+              </div>
+            </div>
+
+            <div>
+              <div class="secHead v-fade" style="--d:2.50s">Conversations · 7 days</div>
+              <div class="bars">
+                <span style="height:34%;--d:2.65s"></span>
+                <span style="height:48%;--d:2.78s"></span>
+                <span style="height:42%;--d:2.91s"></span>
+                <span style="height:63%;--d:3.04s"></span>
+                <span style="height:58%;--d:3.17s"></span>
+                <span style="height:79%;--d:3.30s"></span>
+                <span class="is-peak" style="height:100%;--d:3.43s"></span>
+              </div>
+              <div class="barAxis v-fade" style="--d:3.60s"><span>MON</span><span>SUN</span></div>
+              <div class="statRow">
+                <div class="v-rise" style="--d:4.55s"><span class="label">Conversations</span><span class="value">412</span><span class="up">▲ 23%</span></div>
+                <div class="v-rise" style="--d:4.75s"><span class="label">Hours saved</span><span class="value">68</span><span class="up">▲ 11%</span></div>
+                <div class="v-rise" style="--d:4.95s"><span class="label">Merged</span><span class="value">37</span><span class="up">▲ 9%</span></div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================================== 7 · structure -->
+  <section class="scene" data-scene="structure">
+    <div class="scene__head">
+      <span class="vKicker v-fade" style="--d:0.10s">Structure</span>
+      <h2 class="vHead v-rise" style="--d:0.20s">Projects, sub-projects, and what belongs to them</h2>
+    </div>
+    <div class="scene__body">
+      <div class="tree v-lift" style="--d:0.40s">
+        <div class="tree__root">
+          <span class="mark" style="background:var(--proj-orbit)">O</span>
+          <strong>orbit-web</strong>
+          <span class="tag tag--accent">3 sub-projects</span>
+        </div>
+
+        <div class="branch v-left" style="--d:2.15s">
+          <svg class="ic"><use href="#i-folder"/></svg>
+          <span class="branch__name">web client</span>
+          <span class="leafs">
+            <span class="leaf v-pop" style="--d:3.60s"><svg class="ic"><use href="#i-doc"/></svg>12 repos</span>
+            <span class="leaf v-pop" style="--d:3.75s"><svg class="ic"><use href="#i-bot"/></svg>4 sessions</span>
+          </span>
+        </div>
+        <div class="branch v-left" style="--d:2.45s">
+          <svg class="ic"><use href="#i-folder"/></svg>
+          <span class="branch__name">billing api</span>
+          <span class="leafs">
+            <span class="leaf v-pop" style="--d:3.90s"><svg class="ic"><use href="#i-doc"/></svg>5 repos</span>
+            <span class="leaf v-pop" style="--d:4.05s"><svg class="ic"><use href="#i-bug"/></svg>9 issues</span>
+          </span>
+        </div>
+        <div class="branch v-left" style="--d:2.75s">
+          <svg class="ic"><use href="#i-folder"/></svg>
+          <span class="branch__name">infrastructure</span>
+          <span class="leafs">
+            <span class="leaf v-pop" style="--d:4.20s"><svg class="ic"><use href="#i-shield"/></svg>2 environments</span>
+            <span class="leaf v-pop" style="--d:4.35s"><svg class="ic"><use href="#i-clock"/></svg>nightly</span>
+          </span>
+        </div>
+        <div class="card-foot v-fade" style="--d:5.10s">
+          <svg class="ic ic-15"><use href="#i-layers"/></svg>
+          <span>Repos, sessions, environments and schedules stay with the
+            <strong>sub-project they belong to</strong>.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================== 8 · cta -->
+  <section class="scene" data-scene="cta">
+    <div class="brandLock v-pop" style="--d:0.20s">
+      <img src="/public/favicon.svg" alt=""><span>Coding Lab</span>
+    </div>
+    <div class="spacer"></div>
+    <p class="vLead v-rise" style="--d:1.10s">Every machine, every project and every AI account — in one place you control.</p>
+    <div class="spacer"></div>
+    <span class="urlPill v-rise" style="--d:2.00s">
+      coding-lab.co<svg class="ic ic-18"><use href="#i-arrow"/></svg>
+    </span>
+  </section>
+
+  <div class="chrome">
+    <span class="chrome__brand"><img src="/public/favicon.svg" alt="">Coding Lab</span>
+    <span class="chrome__progress"><i></i></span>
+  </div>
+</div>
+
+<script>
+/* Pull the landing page's icon sprite in, so #i-* works here too. */
+window.spriteReady = fetch("/public/index.html")
+  .then(r => r.text())
+  .then(html => {
+    const m = html.match(/<svg width="0" height="0"[\s\S]*?<\/svg>/);
+    if (!m) throw new Error("icon sprite not found in public/index.html");
+    document.getElementById("sprite").innerHTML = m[0];
+  });
+
+/* Hand inspection: ?scene=hub&t=4.2 freezes one scene at one moment. */
+const q = new URLSearchParams(location.search);
+if (q.has("scene")) {
+  window.spriteReady.then(() => {
+    const el = document.querySelector(`[data-scene="${q.get("scene")}"]`);
+    if (!el) return;
+    el.classList.add("is-on");
+    el.style.opacity = 1;
+    document.querySelector(".chrome").style.opacity = 1;
+    const t = parseFloat(q.get("t") || "99") * 1000;
+    document.getAnimations().forEach(a => { a.pause(); try { a.currentTime = t; } catch {} });
+  });
+}
+</script>
+</body>
+</html>
