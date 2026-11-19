@@ -11,12 +11,16 @@
   animation, and steps each scene's local clock frame by frame, so the picture
   is deterministic and lands exactly on the narration in script.json.
 
-  Open it in a browser to check a scene by hand: ?scene=hub&t=4.2 shows the
-  `hub` scene frozen 4.2 seconds in.
+  Open it in a browser to check a scene by hand: ?scene=stats&t=4.2 shows the
+  `stats` scene frozen 4.2 seconds in. Serve the REPOSITORY ROOT, not public/.
 
-  Animation delays (--d) are written against the measured narration, so a scene
-  whose words change wants its delays nudged. render.mjs prints each scene's
-  measured length to check against.
+  Animation delays (--d) are scene-local seconds, written against where each
+  sentence of the narration starts — `render.mjs --timing` prints those. A
+  scene whose words change wants its delays nudged.
+
+  The screens are the product's own components transcribed to static HTML
+  (see storyboard.css for the sources); the names and figures are the landing
+  page's invented ones: Northwind Studio, Orbit Website, Anna Kowalska…
 -->
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -27,353 +31,673 @@
 </head>
 <body>
 
-<!-- The icon sprite is the landing page's own; it is lifted from index.html at
-     load time so the video can never drift from the site's icon set. -->
+<!-- The landing page's icon sprite, lifted from index.html at load time. -->
 <div id="sprite" hidden></div>
+
+<!-- The product's own icon vocabulary (the app ships Font Awesome Light; these
+     are the open-licence equivalents drawn in the same weight), plus the
+     provider marks from BrandLogo.tsx. OpenAI and DeepSeek are injected from
+     brand/*.svg (Simple Icons, CC0). -->
+<svg width="0" height="0" aria-hidden="true" style="position:absolute">
+  <defs>
+    <symbol id="a-chevron-left" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></symbol>
+    <symbol id="a-chevron-down" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></symbol>
+    <symbol id="a-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></symbol>
+    <symbol id="a-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="a-ellipsis" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.2"/><circle cx="12" cy="12" r="1.2"/><circle cx="19" cy="12" r="1.2"/></symbol>
+    <symbol id="a-comments" viewBox="0 0 24 24"><path d="M14 9a2 2 0 0 1-2 2H6l-4 4V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2z"/><path d="M18 9h2a2 2 0 0 1 2 2v11l-4-4h-6a2 2 0 0 1-2-2v-1"/></symbol>
+    <symbol id="a-columns" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18M15 3v18"/></symbol>
+    <symbol id="a-terminal" viewBox="0 0 24 24"><path d="M4 17l6-6-6-6M12 19h8"/></symbol>
+    <symbol id="a-bot" viewBox="0 0 24 24"><path d="M12 8V4H8"/><rect x="4" y="8" width="16" height="12" rx="2"/><path d="M2 14h2M20 14h2M15 13v2M9 13v2"/></symbol>
+    <symbol id="a-swatch" viewBox="0 0 24 24"><path d="M11 17a4 4 0 0 1-8 0V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2z"/><path d="M16.7 13H19a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H7"/><path d="M11 8.7l3.2-3.2a2 2 0 0 1 2.8 0l2.8 2.8a2 2 0 0 1 0 2.8L11 19.9"/></symbol>
+    <symbol id="a-gauge" viewBox="0 0 24 24"><path d="M12 15l3.5-3.5"/><path d="M20.3 18a9 9 0 1 0-16.6 0"/></symbol>
+    <symbol id="a-idcard" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M16 10h3M16 14h3"/><circle cx="8" cy="11" r="2"/><path d="M5 17a3 3 0 0 1 6 0"/></symbol>
+    <symbol id="a-sliders" viewBox="0 0 24 24"><path d="M21 4h-7M10 4H3M21 12h-9M8 12H3M21 20h-5M12 20H3M14 2v4M8 10v4M16 18v4"/></symbol>
+    <symbol id="a-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></symbol>
+    <symbol id="a-diagram" viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="8" rx="2"/><path d="M7 11v4a2 2 0 0 0 2 2h4"/><rect x="13" y="13" width="8" height="8" rx="2"/></symbol>
+    <symbol id="a-server" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><path d="M6 6h.01M6 18h.01"/></symbol>
+    <symbol id="a-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3M12 17h.01"/></symbol>
+    <symbol id="a-sparkles" viewBox="0 0 24 24"><path d="M12 3l1.9 5.8L20 11l-6.1 2.2L12 19l-1.9-5.8L4 11l6.1-2.2z"/><path d="M19 3v4M17 5h4"/></symbol>
+    <symbol id="a-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
+    <symbol id="a-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/><circle cx="12" cy="12" r="7.5"/></symbol>
+    <symbol id="a-paperclip" viewBox="0 0 24 24"><path d="M21.4 11.05l-9.2 9.2a6 6 0 0 1-8.5-8.5l9.2-9.2a4 4 0 0 1 5.7 5.7l-9.2 9.2a2 2 0 0 1-2.8-2.8l8.5-8.5"/></symbol>
+    <symbol id="a-bolt" viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></symbol>
+    <symbol id="a-brain" viewBox="0 0 24 24"><path d="M12 5a3 3 0 1 0-5.9.9A3 3 0 0 0 4 11a3 3 0 0 0 1 5.8A3 3 0 1 0 12 18z"/><path d="M12 5a3 3 0 1 1 5.9.9A3 3 0 0 1 20 11a3 3 0 0 1-1 5.8A3 3 0 1 1 12 18z"/><path d="M12 5v13"/></symbol>
+    <symbol id="a-check-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-6"/></symbol>
+    <symbol id="a-check" viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></symbol>
+    <symbol id="a-coins" viewBox="0 0 24 24"><circle cx="8" cy="8" r="6"/><path d="M18.1 10.4a6 6 0 1 1-8 8M7 6h1v4M16.7 13.7l.7.7-2.8 2.8"/></symbol>
+    <symbol id="a-lock" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
+    <symbol id="a-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/></symbol>
+    <symbol id="a-folder-tree" viewBox="0 0 24 24"><path d="M13 10h7a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1h-2.5a1 1 0 0 1-.8-.4l-.9-1.2A1 1 0 0 0 15 3h-2a1 1 0 0 0-1 1z"/><path d="M13 21h7a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1h-2.9a1 1 0 0 1-.8-.4l-.9-1.2a1 1 0 0 0-.8-.4H13a1 1 0 0 0-1 1z"/><path d="M3 5a2 2 0 0 0 2 2h3M3 3v13a2 2 0 0 0 2 2h3"/></symbol>
+    <symbol id="a-wand" viewBox="0 0 24 24"><path d="M15 4V2M15 16v-2M8 9h2M20 9h2M17.8 11.8L19 13M15 9h.01M17.8 6.2L19 5M3 21l9-9M12.2 6.2L11 5"/></symbol>
+    <symbol id="a-folder" viewBox="0 0 24 24"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.7-.9L9.6 3.9A2 2 0 0 0 7.9 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2z"/></symbol>
+    <symbol id="a-git" viewBox="0 0 24 24"><path d="M6 3v12"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></symbol>
+    <symbol id="a-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></symbol>
+    <symbol id="a-file" viewBox="0 0 24 24"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></symbol>
+    <symbol id="a-shield" viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.7 9a.6.6 0 0 1-.6 0C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.2-2.6a1 1 0 0 1 1.6 0C14.5 3.8 17 5 19 5a1 1 0 0 1 1 1z"/></symbol>
+    <symbol id="a-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></symbol>
+    <symbol id="a-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="14" height="14" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></symbol>
+    <symbol id="a-arrow-right" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+    <symbol id="a-note" viewBox="0 0 24 24"><path d="M16 3H5a2 2 0 0 0-2 2v14c0 1.1.9 2 2 2h9l7-7V5c0-1.1-.9-2-2-2z"/><path d="M15 21v-5a2 2 0 0 1 2-2h5"/></symbol>
+    <symbol id="a-layers" viewBox="0 0 24 24"><path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z"/><path d="M2 12l10 4.5L22 12M2 17l10 4.5L22 17"/></symbol>
+    <symbol id="a-phone" viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></symbol>
+    <symbol id="a-monitor" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></symbol>
+    <symbol id="a-laptop" viewBox="0 0 24 24"><path d="M20 16V7a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v9m16 0H4m16 0 1.3 1.9a1 1 0 0 1-.8 1.6H3.5a1 1 0 0 1-.8-1.6L4 16"/></symbol>
+    <symbol id="a-triangle" viewBox="0 0 24 24"><path d="M21.7 18l-8-14a2 2 0 0 0-3.5 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.7-3M12 9v4M12 17h.01"/></symbol>
+    <symbol id="a-tower" viewBox="0 0 24 24"><path d="M4.9 16.1a7 7 0 0 1 0-9.9M7.8 13.2a3 3 0 0 1 0-4.2M19.1 6.2a7 7 0 0 1 0 9.9M16.2 9a3 3 0 0 1 0 4.2M12 13v9"/><circle cx="12" cy="11" r="2"/></symbol>
+    <symbol id="a-key" viewBox="0 0 24 24"><circle cx="7.5" cy="15.5" r="5.5"/><path d="M21 2l-9.6 9.6M15.5 7.5l3 3L22 7l-3-3"/></symbol>
+    <symbol id="a-half" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 2v20"/></symbol>
+    <symbol id="a-code" viewBox="0 0 24 24"><path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/></symbol>
+    <symbol id="a-pin" viewBox="0 0 24 24"><path d="M12 17v5M9 10.8V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v5.8l2 2.2H7z"/></symbol>
+
+    <!-- Claude sunburst: 12 radial strokes, radii alternating 3.1/4.4 → 9.4/10.6 -->
+    <symbol id="b-claude" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+      <line x1="16.4" y1="12" x2="22.6" y2="12"/><line x1="14.68" y1="13.55" x2="20.14" y2="16.7"/><line x1="14.2" y1="15.81" x2="17.3" y2="21.18"/>
+      <line x1="12" y1="15.1" x2="12" y2="21.4"/><line x1="9.8" y1="15.81" x2="6.7" y2="21.18"/><line x1="9.32" y1="13.55" x2="3.86" y2="16.7"/>
+      <line x1="7.6" y1="12" x2="1.4" y2="12"/><line x1="9.32" y1="10.45" x2="3.86" y2="7.3"/><line x1="9.8" y1="8.19" x2="6.7" y2="2.82"/>
+      <line x1="12" y1="8.9" x2="12" y2="1.4"/><line x1="14.2" y1="8.19" x2="17.3" y2="2.82"/><line x1="14.68" y1="10.45" x2="20.14" y2="7.3"/>
+    </g></symbol>
+    <!-- custom provider: sliders, deliberately not a vendor -->
+    <symbol id="b-custom" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 7.5h10M18 7.5h2M4 16.5h4M12 16.5h8"/><circle cx="16" cy="7.5" r="2.2"/><circle cx="10" cy="16.5" r="2.2"/></g></symbol>
+  </defs>
+</svg>
 
 <div class="stage">
   <div class="stage__grid"></div>
 
   <!-- ============================================================ 1 · intro -->
-  <section class="scene" data-scene="intro">
+  <!-- 1.00 "We all work on more than one project."  3.79 "And these days, with more than one AI." -->
+  <section class="scene scene--centre" data-scene="intro">
     <div class="brandLock brandLock--sm v-drop" style="--d:0.10s">
       <img src="/public/favicon.svg" alt=""><span>Coding Lab</span>
     </div>
     <div class="spacer"></div>
-    <h1 class="vTitle v-rise" style="--d:0.55s">We all work on more than one project.</h1>
+    <h1 class="vTitle">
+      <span class="v-rise" style="--d:0.50s;display:block">We all work on more than one project.</span>
+      <small class="v-rise" style="--d:3.60s">And with more than one AI.</small>
+    </h1>
     <div class="spacer"></div>
     <div class="projRow">
-      <span class="projChip v-rise" style="--d:1.85s"><span class="mark" style="background:var(--proj-orbit)">O</span>orbit-web <small>· web client</small></span>
-      <span class="projChip v-rise" style="--d:2.00s"><span class="mark" style="background:var(--proj-ledger)">L</span>ledger-app <small>· billing</small></span>
-      <span class="projChip v-rise" style="--d:2.15s"><span class="mark" style="background:var(--proj-pulse)">P</span>pulse-mobile <small>· iOS</small></span>
+      <span class="projChip v-rise" style="--d:1.60s"><span class="pjx-avatar pjx-avatar--sm"><svg class="ic"><use href="#a-globe"/></svg></span>Orbit Website</span>
+      <span class="projChip v-rise" style="--d:1.75s"><span class="pjx-avatar pjx-avatar--sm pjx-avatar--teal"><svg class="ic"><use href="#a-note"/></svg></span>Atlas Notes</span>
+      <span class="projChip v-rise" style="--d:1.90s"><span class="pjx-avatar pjx-avatar--sm" style="background:oklch(0.58 0.17 300)"><svg class="ic"><use href="#a-phone"/></svg></span>Studio App</span>
+    </div>
+    <div class="spacer" style="height:12px"></div>
+    <div class="projRow">
+      <span class="projChip v-rise" style="--d:4.10s"><span class="brand is-claude"><svg><use href="#b-claude"/></svg></span>Claude <small>· team &amp; personal</small></span>
+      <span class="projChip v-rise" style="--d:4.25s"><span class="brand is-codex"><svg><use href="#b-openai"/></svg></span>ChatGPT</span>
+      <span class="projChip v-rise" style="--d:4.40s"><span class="brand is-deepseek"><svg><use href="#b-deepseek"/></svg></span>DeepSeek</span>
+      <span class="projChip v-rise" style="--d:4.55s"><span class="brand is-custom"><svg><use href="#b-custom"/></svg></span>Qwen3 <small>· your own</small></span>
     </div>
   </section>
 
-  <!-- ========================================================= 2 · machines -->
+  <!-- ==================================================== 2 · one interface -->
+  <!-- 0.60 "Instead of juggling a dozen desktop apps … lives in one interface."
+       10.80 "Personal or corporate."   12.96 "Claude, ChatGPT, DeepSeek, or a model of your own." -->
+  <section class="scene" data-scene="one-interface">
+    <div class="scene__head">
+      <span class="vKicker v-fade" style="--d:0.10s">One interface</span>
+      <h2 class="vHead v-rise" style="--d:0.20s">Every conversation, every project, every account</h2>
+    </div>
+    <div class="scene__body">
+
+      <!-- the dozen desktop apps, fanned out, then pulled in -->
+      <div class="deskApps">
+        <div class="v-fly" style="--x:-380px;--y:-150px;--r:-6deg;--d:2.60s;--t:0.75s;position:absolute;left:50%;top:50%"><div class="deskApp v-pop" style="--x:0;--y:0;--r:0;--d:0.40s;margin:-40px 0 0 -110px;position:absolute;left:0;top:0"><span class="brand is-claude"><svg><use href="#b-claude"/></svg></span><span>Claude<small>Team · corporate</small></span></div></div>
+        <div class="v-fly" style="--x:310px;--y:-170px;--r:5deg;--d:2.65s;--t:0.75s;position:absolute;left:50%;top:50%"><div class="deskApp v-pop" style="--d:0.55s;margin:-40px 0 0 -110px;position:absolute;left:0;top:0"><span class="brand is-codex"><svg><use href="#b-openai"/></svg></span><span>ChatGPT<small>Personal</small></span></div></div>
+        <div class="v-fly" style="--x:-330px;--y:120px;--r:4deg;--d:2.70s;--t:0.75s;position:absolute;left:50%;top:50%"><div class="deskApp v-pop" style="--d:0.70s;margin:-40px 0 0 -110px;position:absolute;left:0;top:0"><span class="brand is-deepseek"><svg><use href="#b-deepseek"/></svg></span><span>DeepSeek<small>API key</small></span></div></div>
+        <div class="v-fly" style="--x:360px;--y:110px;--r:-4deg;--d:2.75s;--t:0.75s;position:absolute;left:50%;top:50%"><div class="deskApp v-pop" style="--d:0.85s;margin:-40px 0 0 -110px;position:absolute;left:0;top:0"><span class="brand is-custom"><svg><use href="#b-custom"/></svg></span><span>Qwen3 · local<small>Your own model</small></span></div></div>
+        <div class="v-fly" style="--x:0px;--y:-200px;--r:2deg;--d:2.80s;--t:0.75s;position:absolute;left:50%;top:50%"><div class="deskApp v-pop" style="--d:1.00s;margin:-40px 0 0 -110px;position:absolute;left:0;top:0"><span class="brand is-coding"><svg class="ic" style="width:60%;height:60%;stroke-width:2"><use href="#a-terminal"/></svg></span><span>Terminal<small>Claude Code · Codex CLI</small></span></div></div>
+        <div class="v-fly" style="--x:20px;--y:190px;--r:-3deg;--d:2.85s;--t:0.75s;position:absolute;left:50%;top:50%"><div class="deskApp v-pop" style="--d:1.15s;margin:-40px 0 0 -110px;position:absolute;left:0;top:0"><span class="brand is-claude"><svg><use href="#b-claude"/></svg></span><span>Claude<small>Pro · personal</small></span></div></div>
+      </div>
+
+      <!-- the one window -->
+      <div class="app v-lift" style="--d:3.00s;--t:0.8s">
+        <aside class="app__rail">
+          <div class="rail__brand"><span class="rail__space"><svg class="ic" style="width:13px;height:13px;stroke-width:2.4"><use href="#a-code"/></svg></span></div>
+          <span class="rail__item"><svg class="ic"><use href="#a-search"/></svg></span>
+          <span class="rail__sep"></span>
+          <span class="rail__item"><svg class="ic"><use href="#a-grid"/></svg></span>
+          <span class="rail__item is-active"><svg class="ic"><use href="#a-diagram"/></svg><span class="rail__badge">4</span></span>
+          <span class="rail__item"><svg class="ic"><use href="#a-server"/></svg></span>
+          <span class="rail__sep"></span>
+          <span class="rail__item"><svg class="ic"><use href="#a-help"/></svg></span>
+          <span class="rail__item"><svg class="ic"><use href="#a-sparkles"/></svg></span>
+          <div class="rail__bottom">
+            <span class="rail__item"><span class="rail__lang">EN</span></span>
+            <span class="rail__item"><svg class="ic"><use href="#a-half"/></svg></span>
+            <span class="rail__item"><svg class="ic"><use href="#a-gear"/></svg></span>
+          </div>
+        </aside>
+        <header class="app__head">
+          <svg class="ic ic-back"><use href="#a-chevron-left"/></svg>
+          <span class="pjx-title"><span class="pjx-avatar"><svg class="ic"><use href="#a-globe"/></svg></span>Orbit Website</span>
+          <div class="ai-tabs">
+            <span class="subtab active"><svg class="ic"><use href="#a-comments"/></svg>Sessions<span class="ai-tabs__count">1</span></span>
+            <span class="subtab"><svg class="ic"><use href="#a-columns"/></svg>Board</span>
+            <span class="subtab"><svg class="ic"><use href="#a-terminal"/></svg>Actions</span>
+            <span class="subtab"><svg class="ic"><use href="#a-bot"/></svg>Agents</span>
+            <span class="subtab"><svg class="ic"><use href="#a-swatch"/></svg>Design</span>
+            <span class="ai-tabs__split"></span>
+            <span class="subtab"><svg class="ic"><use href="#a-gauge"/></svg>Usage<span class="usage-meter"><span class="usage-meter__bars"><span class="usage-meter__track"><i style="width:42%"></i></span><span class="usage-meter__track is-warn"><i style="width:71%"></i></span></span><span class="usage-meter__num">42%</span></span></span>
+            <span class="subtab"><svg class="ic"><use href="#a-sliders"/></svg>Settings</span>
+          </div>
+          <span class="app__menu"><svg class="ic"><use href="#a-ellipsis"/></svg></span>
+        </header>
+        <div class="app__body">
+          <div class="cwc">
+            <aside class="cwc__rail">
+              <div class="cwc__search-row">
+                <span class="search-input"><svg class="ic"><use href="#a-search"/></svg>Search sessions</span>
+                <span class="btn-icon"><svg class="ic"><use href="#a-plus"/></svg></span>
+              </div>
+              <div class="cwc__session-list">
+                <div class="ai-group-head v-fade" style="--d:3.50s"><span class="lb">Today</span><span class="n">4</span></div>
+                <div class="cwc__session-row active v-rise" style="--d:3.60s;--t:.45s"><span class="cwc__session-icon"><svg class="ic"><use href="#a-bot"/></svg></span><span class="cwc__session-title">Plan a responsive homepage</span><span class="cwc__session-face" style="background:oklch(0.6 0.19 280)"><svg class="ic"><use href="#a-globe"/></svg></span><span class="cwc__session-slot">38m</span></div>
+                <div class="cwc__session-row v-rise" style="--d:3.75s;--t:.45s"><span class="cwc__session-icon is-unread"><svg class="ic"><use href="#a-bot"/></svg></span><span class="cwc__session-title">Review keyboard navigation</span><span class="cwc__session-face" style="background:oklch(0.6 0.19 280)"><svg class="ic"><use href="#a-globe"/></svg></span><span class="cwc__session-slot">1h</span></div>
+                <div class="cwc__session-row v-rise" style="--d:3.90s;--t:.45s"><span class="cwc__session-icon"><svg class="ic"><use href="#a-sparkles"/></svg></span><span class="cwc__session-title">Invoice PDF export</span><span class="cwc__session-face" style="background:oklch(0.7 0.12 185)"><svg class="ic"><use href="#a-note"/></svg></span><span class="cwc__session-slot">2h</span></div>
+                <div class="cwc__session-row v-rise" style="--d:4.05s;--t:.45s"><span class="cwc__session-icon"><svg class="ic"><use href="#a-bot"/></svg></span><span class="cwc__session-title">Offline sync feasibility</span><span class="cwc__session-face" style="background:oklch(0.58 0.17 300)"><svg class="ic"><use href="#a-phone"/></svg></span><span class="cwc__session-slot">3h</span></div>
+                <div class="ai-group-head v-fade" style="--d:4.20s"><span class="lb">Yesterday</span><span class="n">3</span></div>
+                <div class="cwc__session-row v-rise" style="--d:4.30s;--t:.45s"><span class="cwc__session-icon"><svg class="ic"><use href="#a-bot"/></svg></span><span class="cwc__session-title">Billing settings page</span><span class="cwc__session-face" style="background:oklch(0.6 0.19 280)"><svg class="ic"><use href="#a-globe"/></svg></span><span class="cwc__session-slot">1d</span></div>
+                <div class="cwc__session-row v-rise" style="--d:4.45s;--t:.45s"><span class="cwc__session-icon"><svg class="ic"><use href="#a-terminal"/></svg></span><span class="cwc__session-title">Push notification retries</span><span class="cwc__session-face" style="background:oklch(0.6 0.19 280)"><svg class="ic"><use href="#a-globe"/></svg></span><span class="cwc__session-slot">1d</span></div>
+                <div class="cwc__session-row v-rise" style="--d:4.60s;--t:.45s"><span class="cwc__session-icon"><svg class="ic"><use href="#a-sparkles"/></svg></span><span class="cwc__session-title">Release notes for 1.4</span><span class="cwc__session-face" style="background:oklch(0.7 0.12 185)"><svg class="ic"><use href="#a-note"/></svg></span><span class="cwc__session-slot">1d</span></div>
+              </div>
+              <div class="cwc__rail-foot v-fade" style="--d:4.8s">7 conversations · 3 projects</div>
+            </aside>
+
+            <section class="cwc__conversation">
+              <header class="cwc__conversation-head v-fade" style="--d:3.60s">
+                <div class="cwc__conversation-title">
+                  <span class="cwc__bot-mark"><svg class="ic"><use href="#a-bot"/></svg></span>
+                  <div><h3>Plan a responsive homepage</h3><span>Coding · 2 turns · 084766b8</span></div>
+                </div>
+                <div class="cwc__conversation-actions">
+                  <span class="cwc__tokens"><svg class="ic"><use href="#a-coins"/></svg><b>12.4k</b>↓ 9.1k ↑ 3.3k</span>
+                  <span class="cwc__status is-completed"><svg class="ic"><use href="#a-check-circle"/></svg>Completed</span>
+                  <svg class="ic" style="width:14px;height:14px;color:var(--a-muted)"><use href="#a-copy"/></svg>
+                </div>
+              </header>
+              <div class="cwc__messages">
+                <div class="cwc__message is-user v-rise" style="--d:4.40s">
+                  <div class="cwc__markdown"><p>Plan a responsive homepage for Orbit, a fictional note-taking app. Keep the layout simple and accessible.</p></div>
+                  <div class="cwc__message-meta">Nov 6, 2026 at 07:37 pm</div>
+                </div>
+                <div class="cwc__message v-rise" style="--d:5.00s">
+                  <span class="cwc__turn-mark"><svg class="ic"><use href="#a-bot"/></svg></span>
+                  <div class="cwc__turn-body">
+                    <div class="cwc__markdown">
+                      <h3>Homepage plan</h3>
+                      <ol>
+                        <li><strong>Hero:</strong> one clear headline, a short explanation and a primary action.</li>
+                        <li><strong>Features:</strong> three cards describing quick capture, organization and search.</li>
+                        <li><strong>How it works:</strong> create a note, add a tag, find it later.</li>
+                        <li><strong>Footer:</strong> support and privacy links.</li>
+                      </ol>
+                      <p>Use a single column on phones and a three-column feature grid on wide screens. Keep headings in order and make every control reachable with a keyboard.</p>
+                    </div>
+                    <div class="cwc__message-meta">Nov 6, 2026 at 07:37 pm <span>·</span> Opus <span>·</span> Claude Team</div>
+                  </div>
+                </div>
+              </div>
+              <div class="cwc__composer v-rise" style="--d:5.60s">
+                <div class="cwc__composer-box">
+                  <div class="cwc__composer-text">What would you like done?</div>
+                  <div class="cwc__composer-bar">
+                    <span class="cwc__composer-add"><svg class="ic"><use href="#a-paperclip"/></svg></span>
+                    <span class="cwc__meta-chip"><svg class="ic"><use href="#a-bot"/></svg>Coding<svg class="ic cwc__caret"><use href="#a-chevron-down"/></svg></span>
+                    <span class="cwc__meta-chip cwc__meta-level"><svg class="ic"><use href="#a-bolt"/></svg>Free<svg class="ic cwc__caret"><use href="#a-chevron-down"/></svg></span>
+                    <span class="cwc__meta-chip" id="modelChip" style="animation:vHi 1.1s both 13.0s"><svg class="ic"><use href="#a-brain"/></svg><span id="modelName">Opus</span><svg class="ic cwc__caret"><use href="#a-chevron-down"/></svg>
+                      <!-- the model menu: Claude · ChatGPT · DeepSeek · a model of your own -->
+                      <div class="cwc__menu v-pop" style="--d:13.05s;--t:.35s;transform-origin:bottom left">
+                        <div class="cwc__menu-head">Model</div>
+                        <div class="cwc__menu-row" style="animation:vLit .4s both 13.25s, vUnlit .3s forwards 14.0s"><span class="brand brand--inline is-claude"><svg><use href="#b-claude"/></svg></span>Claude · Opus<small>Claude Team</small></div>
+                        <div class="cwc__menu-row" style="animation:vLit .4s both 14.00s, vUnlit .3s forwards 14.8s"><span class="brand brand--inline is-codex"><svg><use href="#b-openai"/></svg></span>ChatGPT · GPT-5.6 Sol<small>personal</small></div>
+                        <div class="cwc__menu-row" style="animation:vLit .4s both 14.80s, vUnlit .3s forwards 15.7s"><span class="brand brand--inline is-deepseek"><svg><use href="#b-deepseek"/></svg></span>DeepSeek V4 Pro<small>API key</small></div>
+                        <div class="cwc__menu-row" style="animation:vLit .4s both 15.70s"><span class="brand brand--inline is-custom"><svg><use href="#b-custom"/></svg></span>Qwen3 · configured model<small>local</small></div>
+                      </div>
+                    </span>
+                    <span class="cwc__meta-chip"><svg class="ic"><use href="#a-brain"/></svg>High<svg class="ic cwc__caret"><use href="#a-chevron-down"/></svg></span>
+                    <span class="cwc__meta-run"><span class="brand brand--inline is-claude"><svg><use href="#b-claude"/></svg></span>Claude Code</span>
+                  </div>
+                </div>
+                <p class="cwc__composer-caveat">The assistant runs on your worker and follows the checkout's execution and publishing rules.</p>
+              </div>
+            </section>
+          </div>
+        </div>
+      </div>
+
+      <!-- "Personal or corporate." -->
+      <span class="acctPop" style="right:96px;top:112px;animation:vPop .55s both 10.90s, vOut .4s forwards 13.0s"><span class="brand is-claude"><svg><use href="#b-claude"/></svg></span>Claude Team<small>corporate</small></span>
+      <span class="acctPop" style="right:96px;top:158px;animation:vPop .55s both 11.55s, vOut .4s forwards 13.0s"><span class="brand is-claude"><svg><use href="#b-claude"/></svg></span>Own Claude Pro<small>personal</small></span>
+    </div>
+  </section>
+
+  <!-- ========================================================== 3 · inherit -->
+  <!-- 0.60 "Define an agent, a skill, or a resource once, for one project, and every assistant in it has it."
+       7.04 "Sub-projects inherit it too." -->
+  <section class="scene" data-scene="inherit">
+    <div class="scene__head">
+      <span class="vKicker v-fade" style="--d:0.10s">Define once</span>
+      <h2 class="vHead v-rise" style="--d:0.20s">Set it up for the project, every assistant has it</h2>
+    </div>
+    <div class="scene__body">
+      <div class="inh appless">
+        <div class="card-a v-lift" style="--d:0.40s">
+          <div class="card-a__head"><span class="pjx-avatar"><svg class="ic"><use href="#a-globe"/></svg></span>Orbit Website<span class="sp"></span><span class="pill">Project</span></div>
+          <div class="card-a__body">
+            <div class="defRow v-rise" style="--d:1.05s"><span class="defRow__ic"><svg class="ic"><use href="#a-bot"/></svg></span><span><span class="defRow__kind">Agent</span><strong>Reviewer</strong></span><span class="pill">nightly</span></div>
+            <div class="defRow v-rise" style="--d:1.75s"><span class="defRow__ic"><svg class="ic"><use href="#a-wand"/></svg></span><span><span class="defRow__kind">Skill</span><strong>Deploy checklist</strong></span><span class="pill">loaded on demand</span></div>
+            <div class="defRow v-rise" style="--d:2.45s"><span class="defRow__ic"><svg class="ic"><use href="#a-layers"/></svg></span><span><span class="defRow__kind">Resource · MCP</span><strong>Design tokens</strong></span><span class="pill">read-only</span></div>
+          </div>
+          <div class="tmplFoot v-fade" style="--d:3.2s"><svg class="ic" style="width:13px;height:13px"><use href="#a-check-circle"/></svg>Written once, on the project.</div>
+        </div>
+
+        <div class="inhFlow">
+          <div class="inhArrow v-fade" style="--d:3.90s"><i class="v-growx" style="--d:3.90s;--t:.6s"></i>every assistant in it<svg class="ic"><use href="#a-arrow-right"/></svg></div>
+          <div class="assistRow">
+            <div class="assist v-lift" style="--d:0.60s">
+              <div class="assist__who"><span class="brand brand--30 is-claude"><svg><use href="#b-claude"/></svg></span><span>Coding<small>Claude Code · Opus</small></span></div>
+              <div class="assist__got">
+                <span class="got v-pop" style="--d:4.30s"><svg class="ic"><use href="#a-check"/></svg>Reviewer</span>
+                <span class="got v-pop" style="--d:4.50s"><svg class="ic"><use href="#a-check"/></svg>Deploy checklist</span>
+                <span class="got v-pop" style="--d:4.70s"><svg class="ic"><use href="#a-check"/></svg>Design tokens</span>
+              </div>
+            </div>
+            <div class="assist v-lift" style="--d:0.75s">
+              <div class="assist__who"><span class="brand brand--30 is-codex"><svg><use href="#b-openai"/></svg></span><span>Docs<small>Codex · GPT-5.6 Sol</small></span></div>
+              <div class="assist__got">
+                <span class="got v-pop" style="--d:4.45s"><svg class="ic"><use href="#a-check"/></svg>Reviewer</span>
+                <span class="got v-pop" style="--d:4.65s"><svg class="ic"><use href="#a-check"/></svg>Deploy checklist</span>
+                <span class="got v-pop" style="--d:4.85s"><svg class="ic"><use href="#a-check"/></svg>Design tokens</span>
+              </div>
+            </div>
+            <div class="assist v-lift" style="--d:0.90s">
+              <div class="assist__who"><span class="brand brand--30 is-custom"><svg><use href="#b-custom"/></svg></span><span>Research<small>Qwen3 · local</small></span></div>
+              <div class="assist__got">
+                <span class="got v-pop" style="--d:4.60s"><svg class="ic"><use href="#a-check"/></svg>Reviewer</span>
+                <span class="got v-pop" style="--d:4.80s"><svg class="ic"><use href="#a-check"/></svg>Deploy checklist</span>
+                <span class="got v-pop" style="--d:5.00s"><svg class="ic"><use href="#a-check"/></svg>Design tokens</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- the sub-project's card, exactly as the app draws it -->
+          <div class="inhArrow v-fade" style="--d:7.10s"><i class="v-growx" style="--d:7.10s;--t:.6s"></i>and every sub-project<svg class="ic"><use href="#a-arrow-right"/></svg></div>
+          <div class="appless pjx-inherit v-rise" style="--d:7.30s">
+            <div class="pjx-inherit__head">
+              <span class="pjx-avatar" style="position:relative"><svg class="ic"><use href="#a-globe"/></svg><span class="pjx-avatar pjx-avatar--sm" style="position:absolute;right:-6px;bottom:-6px;width:16px;height:16px;border-radius:5px;border:2px solid #fff;background:oklch(0.62 0.17 275)"><svg class="ic" style="width:8px;height:8px"><use href="#a-folder"/></svg></span></span>
+              <span><span class="pjx-inherit__title">Inherited from Orbit Website</span><span class="pjx-inherit__sub">These are changed in Orbit Website and are read-only here.</span></span>
+              <span class="pjx-inherit__lock"><svg class="ic"><use href="#a-lock"/></svg>Read-only</span>
+            </div>
+            <ul class="pjx-inherit__grid">
+              <li class="pjx-inherit__item v-fade" style="--d:7.70s"><svg class="ic"><use href="#a-users"/></svg>Team</li>
+              <li class="pjx-inherit__item v-fade" style="--d:7.80s"><svg class="ic"><use href="#a-folder-tree"/></svg>Checkouts</li>
+              <li class="pjx-inherit__item v-fade" style="--d:7.90s"><svg class="ic"><use href="#a-wand"/></svg>Assistants</li>
+              <li class="pjx-inherit__item v-fade" style="--d:8.00s"><svg class="ic"><use href="#a-bot"/></svg>Agents</li>
+              <li class="pjx-inherit__item v-fade" style="--d:8.10s"><svg class="ic"><use href="#a-sliders"/></svg>Project settings</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =================================================== 4 · start-template -->
+  <!-- 0.60 "To start a project, you have two options."
+       3.98 "Build a starting point: repositories, repository rules, instructions and skills."
+       9.66 "Share it, and every teammate sets up the same environment in minutes." -->
+  <section class="scene" data-scene="start-template">
+    <div class="scene__head">
+      <span class="vKicker v-fade" style="--d:0.10s">Starting a project</span>
+      <h2 class="vHead v-rise" style="--d:0.20s">Two ways to start</h2>
+    </div>
+    <div class="scene__body" style="align-items:flex-start;padding-top:8px">
+      <div class="ckw appless">
+        <p class="ckw__q v-rise" style="--d:0.35s">Where does the code come from?<small>This decides whether teammates can set up the same checkout on their own workers.</small></p>
+
+        <div class="srcCard v-lift" style="--d:0.70s">
+          <span class="pick is-picked" style="--d:4.0s;position:absolute;inset:-1px;border-radius:10px;border:1px solid oklch(0.62 0.17 275 / 0.7);box-shadow:0 0 0 3px oklch(0.62 0.17 275 / 0.14);pointer-events:none"></span>
+          <span class="srcCard__ic"><svg class="ic"><use href="#a-git"/></svg></span>
+          <span><span class="srcCard__t">Clone Git repositories<span class="pill is-accent">Shareable</span><span class="pill">Recommended</span></span>
+          <span class="srcCard__b">Add repositories and pick a branch for each. Teammates with access set up the same checkout on their own workers.</span></span>
+        </div>
+        <div class="srcCard v-lift" style="--d:0.90s;animation:vLift .7s both .9s, vDim .5s forwards 4.2s">
+          <span class="srcCard__ic"><svg class="ic"><use href="#a-folder"/></svg></span>
+          <span><span class="srcCard__t">A folder on this worker<span class="pill">Solo</span></span>
+          <span class="srcCard__b">Point at a folder that already exists on this machine. Good for working alone.</span></span>
+        </div>
+
+        <!-- the starting point -->
+        <div class="tmplPanel v-rise" style="--d:4.40s">
+          <div class="card-a">
+            <div class="tmplSteps">
+              <div class="tmplSteps__t">Set up the starting point</div>
+              <div class="tmplStep is-done"><span class="n"><svg class="ic" style="width:9px;height:9px;stroke-width:3;color:#fff"><use href="#a-check"/></svg></span>Source</div>
+              <div class="tmplStep is-on"><span class="n">2</span>Repositories</div>
+              <div class="tmplStep"><span class="n">3</span>Rules</div>
+              <div class="tmplStep"><span class="n">4</span>Instructions</div>
+              <div class="tmplStep"><span class="n">5</span>MCPs</div>
+            </div>
+            <div class="tmplBody">
+              <div class="tmplSec">
+                <div class="tmplSec__h">Repositories</div>
+                <div class="tmplRow v-fade" style="--d:5.00s"><svg class="ic"><use href="#a-git"/></svg><code>github.com/northwind/orbit-web</code><span class="gap"><span class="pill">main</span><span class="pill is-ok">Cloned</span></span></div>
+                <div class="tmplRow v-fade" style="--d:5.20s"><svg class="ic"><use href="#a-git"/></svg><code>github.com/northwind/orbit-api</code><span class="gap"><span class="pill">main</span><span class="pill is-ok">Cloned</span></span></div>
+                <div class="tmplRow v-fade" style="--d:5.40s"><svg class="ic"><use href="#a-git"/></svg><code>github.com/northwind/design-system</code><span class="gap"><span class="pill">develop</span><span class="pill is-ok">Cloned</span></span></div>
+              </div>
+              <div class="tmplSec">
+                <div class="tmplSec__h">Rules</div>
+                <div class="tmplRow v-fade" style="--d:6.40s"><svg class="ic"><use href="#a-folder-tree"/></svg>Use session worktrees · an isolated copy per conversation<span class="gap"><span class="pill is-accent">Recommended</span></span></div>
+                <div class="tmplRow v-fade" style="--d:6.65s"><svg class="ic"><use href="#a-shield"/></svg>When a task is done, push to <code>main</code> after the checks pass<span class="gap"><span class="pill">Parallel</span></span></div>
+              </div>
+              <div class="tmplSec">
+                <div class="tmplSec__h">Instructions &amp; skills</div>
+                <div class="tmplRow v-fade" style="--d:7.60s"><svg class="ic"><use href="#a-file"/></svg>Project instructions<span class="gap"><span class="pill is-ok">Written</span></span></div>
+                <div class="tmplRow v-fade" style="--d:7.90s"><svg class="ic"><use href="#a-wand"/></svg>Skills<span class="gap"><span class="pill">Deploy checklist</span><span class="pill">Release notes</span></span></div>
+              </div>
+            </div>
+            <div class="tmplFoot">
+              <span class="btn-a v-pop" style="--d:9.80s"><svg class="ic"><use href="#a-users"/></svg>Share with the team</span>
+              <span class="v-fade ellipsis" style="--d:10.0s;min-width:0">Every machine set up from it gets these repositories, rules and instructions.</span>
+              <span class="mates">
+                <span class="mate v-pop" style="--d:10.40s"><span class="avatar avatar--24" style="background:oklch(0.58 0.14 160)">AK</span>Anna<svg class="ic"><use href="#a-check"/></svg></span>
+                <span class="mate v-pop" style="--d:10.85s"><span class="avatar avatar--24" style="background:oklch(0.55 0.12 250)">JM</span>Jean<svg class="ic"><use href="#a-check"/></svg></span>
+                <span class="mate v-pop" style="--d:11.30s"><span class="avatar avatar--24" style="background:oklch(0.58 0.17 300)">OB</span>Oleh<svg class="ic"><use href="#a-check"/></svg></span>
+                <span class="pill is-ok v-fade" style="--d:11.80s">Your environment is ready</span>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================================================== 5 · start-local -->
+  <!-- 0.50 "Or begin with a folder on your own machine."   3.56 "Prototype, and build from there." -->
+  <section class="scene" data-scene="start-local">
+    <div class="scene__head">
+      <span class="vKicker v-fade" style="--d:0.10s">Or start small</span>
+      <h2 class="vHead v-rise" style="--d:0.20s">A folder on your own machine</h2>
+    </div>
+    <div class="scene__body">
+      <div class="localWrap appless">
+        <div class="folder v-lift" style="--d:0.40s">
+          <div class="folder__path"><svg class="ic"><use href="#a-folder"/></svg>~/code/prototype<span class="pill">studio-mini-1</span><span class="pill is-accent" style="margin-left:6px">Solo</span></div>
+          <div class="folder__scan">
+            <div class="tmplSec__h" style="padding:8px 0 4px">Repositories to work on <span style="margin-left:auto;font-family:var(--mono);font-weight:400;font-size:11px">1 of 1 selected</span></div>
+            <div class="tmplRow v-fade" style="--d:1.30s"><svg class="ic"><use href="#a-git"/></svg><code>prototype</code><span class="gap"><span class="pill">main</span><span class="pill is-ok">clean</span><span class="pill">last commit 2h ago</span></span></div>
+          </div>
+          <div class="folder__note v-fade" style="--d:2.10s"><svg class="ic"><use href="#a-laptop"/></svg>Solo checkout. Only studio-mini-1 can open this folder.<a class="v-fade" style="--d:4.20s">Clone repositories instead<svg class="ic" style="width:12px;height:12px"><use href="#a-arrow-right"/></svg></a></div>
+        </div>
+        <div class="growLine">
+          <span class="step v-pop" style="--d:3.70s"><svg class="ic"><use href="#a-folder"/></svg>Prototype here</span>
+          <svg class="ic v-fade" style="--d:4.05s"><use href="#a-arrow-right"/></svg>
+          <span class="step v-pop" style="--d:4.15s"><svg class="ic"><use href="#a-git"/></svg>Add repositories</span>
+          <svg class="ic v-fade" style="--d:4.50s"><use href="#a-arrow-right"/></svg>
+          <span class="step v-pop" style="--d:4.60s"><svg class="ic"><use href="#a-users"/></svg>Share it as a starting point</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================= 6 · machines -->
+  <!-- 0.60 "Keep working on your own machine, and add another with its own credentials and its own level of access."
+       7.17 "Coding Lab watches every account's limits, on every machine it is signed in on." -->
   <section class="scene" data-scene="machines">
     <div class="scene__head">
-      <span class="vKicker v-fade" style="--d:0.15s">Your machines</span>
-      <h2 class="vHead v-rise" style="--d:0.25s">Add a machine, with its own access</h2>
+      <span class="vKicker v-fade" style="--d:0.10s">Machines &amp; accounts</span>
+      <h2 class="vHead v-rise" style="--d:0.20s">Every machine, every account, every limit</h2>
     </div>
     <div class="scene__body">
-      <div class="twoUp">
 
-        <div class="mcard v-lift" style="--d:0.35s">
+      <!-- phase 1: your machine, then another -->
+      <div class="twoUp" style="animation:vOut .5s forwards 6.95s">
+        <div class="mcard v-lift" style="--d:0.40s">
           <div class="mcard__top">
-            <span class="mcard__icon"><svg class="ic ic-20"><use href="#i-monitor"/></svg></span>
-            <span class="machine-row__text">
-              <span class="mcard__name">studio-mini-1</span>
-              <span class="mcard__os">macOS 15 · your own machine</span>
-            </span>
+            <span class="mcard__icon"><svg class="ic ic-18"><use href="#a-monitor"/></svg></span>
+            <span><span class="mcard__name">studio-mini-1</span><span class="mcard__os">macOS 15 · your own machine</span></span>
             <span class="mcard__state"><span class="status status--running"><span class="dot is-pulsing"></span>Online</span></span>
           </div>
           <div class="mcard__rows">
-            <div class="mrow"><span class="mark" style="background:oklch(0.62 0.16 45)">C</span>Claude Team<span class="mrow__meta">signed in</span></div>
-            <div class="mrow"><span class="mark" style="background:var(--ink)">O</span>Codex<span class="mrow__meta">signed in</span></div>
-            <div class="mrow"><span class="mark" style="background:var(--green)">L</span>Qwen3 · local<span class="mrow__meta">on this GPU</span></div>
+            <div class="mrow"><span class="brand is-claude"><svg><use href="#b-claude"/></svg></span>Claude Team<span class="mrow__meta">signed in</span></div>
+            <div class="mrow"><span class="brand is-codex"><svg><use href="#b-openai"/></svg></span>ChatGPT · personal<span class="mrow__meta">signed in</span></div>
+            <div class="mrow"><span class="brand is-custom"><svg><use href="#b-custom"/></svg></span>Qwen3 · local<span class="mrow__meta">on this GPU</span></div>
           </div>
-          <div class="mcard__foot">
-            <svg class="ic ic-14"><use href="#i-shield"/></svg>
-            <span class="tag tag--good">Full access</span>
-          </div>
+          <div class="mcard__foot"><svg class="ic ic-14"><use href="#a-shield"/></svg><span class="tag tag--good">Full access</span></div>
         </div>
-
-        <div class="mcard v-right" style="--d:3.00s;--t:0.8s">
+        <div class="mcard v-right" style="--d:2.90s;--t:0.8s">
           <div class="mcard__top">
-            <span class="mcard__icon"><svg class="ic ic-20"><use href="#i-server"/></svg></span>
-            <span class="machine-row__text">
-              <span class="mcard__name">linux-build-01</span>
-              <span class="mcard__os">Ubuntu 24.04 · shared worker</span>
-            </span>
+            <span class="mcard__icon"><svg class="ic ic-18"><use href="#a-server"/></svg></span>
+            <span><span class="mcard__name">linux-build-01</span><span class="mcard__os">Ubuntu 24.04 · shared worker</span></span>
             <span class="mcard__state"><span class="status status--running"><span class="dot is-pulsing"></span>Online</span></span>
           </div>
           <div class="mcard__rows">
-            <div class="mrow v-rise" style="--d:4.30s"><span class="mark" style="background:oklch(0.7 0.12 55)">C</span>Own Claude Pro<span class="mrow__meta">own credentials</span></div>
-            <div class="mrow v-rise" style="--d:4.45s"><span class="mark" style="background:var(--ink)">O</span>Codex Team<span class="mrow__meta">company seat</span></div>
-            <div class="mrow v-rise" style="--d:4.60s"><span class="mark" style="background:oklch(0.55 0.12 250)">R</span>orbit-server<span class="mrow__meta">repo scope</span></div>
+            <div class="mrow v-rise" style="--d:3.90s"><span class="brand is-claude"><svg><use href="#b-claude"/></svg></span>Own Claude Pro<span class="mrow__meta">own credentials</span></div>
+            <div class="mrow v-rise" style="--d:4.05s"><span class="brand is-codex"><svg><use href="#b-openai"/></svg></span>ChatGPT Team<span class="mrow__meta">company seat</span></div>
+            <div class="mrow v-rise" style="--d:4.20s"><span class="brand is-deepseek"><svg><use href="#b-deepseek"/></svg></span>DeepSeek<span class="mrow__meta">API key</span></div>
           </div>
-          <div class="mcard__foot">
-            <svg class="ic ic-14"><use href="#i-shield"/></svg>
-            <span class="tag tag--warn v-pop" style="--d:5.40s">Contractor · limited</span>
-            <span class="tag tag--mute v-pop" style="--d:5.60s">No production</span>
+          <div class="mcard__foot"><svg class="ic ic-14"><use href="#a-shield"/></svg><span class="tag tag--warn v-pop" style="--d:5.10s">Contractor · limited</span><span class="tag tag--mute v-pop" style="--d:5.35s">No production</span></div>
+        </div>
+      </div>
+
+      <!-- phase 2: the Accounts tab -->
+      <div class="app v-lift" style="--d:7.15s;--t:.8s">
+        <aside class="app__rail">
+          <div class="rail__brand"><span class="rail__space"><svg class="ic" style="width:13px;height:13px;stroke-width:2.4"><use href="#a-code"/></svg></span></div>
+          <span class="rail__item"><svg class="ic"><use href="#a-search"/></svg></span>
+          <span class="rail__sep"></span>
+          <span class="rail__item"><svg class="ic"><use href="#a-grid"/></svg></span>
+          <span class="rail__item is-active"><svg class="ic"><use href="#a-diagram"/></svg><span class="rail__badge">4</span></span>
+          <span class="rail__item"><svg class="ic"><use href="#a-server"/></svg></span>
+          <span class="rail__sep"></span>
+          <span class="rail__item"><svg class="ic"><use href="#a-help"/></svg></span>
+          <span class="rail__item"><svg class="ic"><use href="#a-sparkles"/></svg></span>
+          <div class="rail__bottom">
+            <span class="rail__item"><span class="rail__lang">EN</span></span>
+            <span class="rail__item"><svg class="ic"><use href="#a-half"/></svg></span>
+            <span class="rail__item"><svg class="ic"><use href="#a-gear"/></svg></span>
+          </div>
+        </aside>
+        <header class="app__head">
+          <svg class="ic ic-back"><use href="#a-chevron-left"/></svg>
+          <span class="pjx-title"><span class="pjx-avatar"><svg class="ic"><use href="#a-globe"/></svg></span>Orbit Website</span>
+          <div class="ai-tabs">
+            <span class="subtab"><svg class="ic"><use href="#a-comments"/></svg>Sessions</span>
+            <span class="subtab"><svg class="ic"><use href="#a-columns"/></svg>Board</span>
+            <span class="subtab"><svg class="ic"><use href="#a-terminal"/></svg>Actions</span>
+            <span class="subtab"><svg class="ic"><use href="#a-bot"/></svg>Agents</span>
+            <span class="subtab"><svg class="ic"><use href="#a-swatch"/></svg>Design</span>
+            <span class="ai-tabs__split"></span>
+            <span class="subtab"><svg class="ic"><use href="#a-gauge"/></svg>Usage<span class="usage-meter"><span class="usage-meter__bars"><span class="usage-meter__track"><i style="width:42%"></i></span><span class="usage-meter__track is-warn"><i style="width:71%"></i></span></span><span class="usage-meter__num">42%</span></span></span>
+            <span class="subtab active"><svg class="ic"><use href="#a-idcard"/></svg>Accounts</span>
+            <span class="subtab"><svg class="ic"><use href="#a-sliders"/></svg>Settings</span>
+          </div>
+          <span class="app__menu"><svg class="ic"><use href="#a-ellipsis"/></svg></span>
+        </header>
+        <div class="app__body">
+          <div class="pjx-accounts">
+            <aside class="pjxac-aside">
+              <div class="cwc__search-row">
+                <span class="search-input"><svg class="ic"><use href="#a-search"/></svg>Search email, name, worker, person or project</span>
+                <span class="btn-icon"><svg class="ic"><use href="#a-plus"/></svg></span>
+              </div>
+              <div class="people-section__head v-fade" style="--d:7.60s">Needs attention <span>1</span></div>
+              <div class="person-row v-rise" style="--d:7.65s;--t:.45s"><span class="brand brand--30 is-codex"><svg><use href="#b-openai"/></svg></span><span class="body"><span class="name">ChatGPT Team</span><span class="sub is-warn"><svg class="ic" style="width:11px;height:11px"><use href="#a-triangle"/></svg>Close to weekly limit</span></span><span class="pjxac-limits"><span class="pjxac-lim"><span class="pjxac-lim__label">5h</span><span class="pjxac-track"><span class="pjxac-track__fill v-growx" style="width:38%;--d:7.9s;--t:.6s"></span></span><span class="pjxac-lim__value">38%</span></span><span class="pjxac-lim"><span class="pjxac-lim__label">7d</span><span class="pjxac-track"><span class="pjxac-track__fill is-warn v-growx" style="width:91%;--d:7.9s;--t:.6s"></span></span><span class="pjxac-lim__value is-warn">91%</span></span></span></div>
+              <div class="people-section__head v-fade" style="--d:7.85s">Signed in <span>4</span></div>
+              <div class="person-row active v-rise" style="--d:7.90s;--t:.45s"><span class="brand brand--30 is-claude"><svg><use href="#b-claude"/></svg></span><span class="body"><span class="name">Claude Team</span><span class="sub">anna@northwind.studio · On 2 workers</span></span><span class="pjxac-limits"><span class="pjxac-lim"><span class="pjxac-lim__label">5h</span><span class="pjxac-track"><span class="pjxac-track__fill v-growx" style="width:42%;--d:8.1s;--t:.6s"></span></span><span class="pjxac-lim__value">42%</span></span><span class="pjxac-lim"><span class="pjxac-lim__label">7d</span><span class="pjxac-track"><span class="pjxac-track__fill v-growx" style="width:61%;--d:8.1s;--t:.6s"></span></span><span class="pjxac-lim__value">61%</span></span></span></div>
+              <div class="person-row v-rise" style="--d:8.05s;--t:.45s"><span class="brand brand--30 is-claude"><svg><use href="#b-claude"/></svg></span><span class="body"><span class="name">Own Claude Pro</span><span class="sub">alex@rivera.dev · On 1 worker</span></span><span class="pjxac-limits"><span class="pjxac-lim"><span class="pjxac-lim__label">5h</span><span class="pjxac-track"><span class="pjxac-track__fill v-growx" style="width:12%;--d:8.3s;--t:.6s"></span></span><span class="pjxac-lim__value">12%</span></span><span class="pjxac-lim"><span class="pjxac-lim__label">7d</span><span class="pjxac-track"><span class="pjxac-track__fill v-growx" style="width:47%;--d:8.3s;--t:.6s"></span></span><span class="pjxac-lim__value">47%</span></span></span></div>
+              <div class="person-row v-rise" style="--d:8.20s;--t:.45s"><span class="brand brand--30 is-deepseek"><svg><use href="#b-deepseek"/></svg></span><span class="body"><span class="name">DeepSeek</span><span class="sub">API key · On 1 worker</span></span><span class="pjxac-side">Balance $42.10</span></div>
+              <div class="person-row v-rise" style="--d:8.35s;--t:.45s"><span class="brand brand--30 is-custom"><svg><use href="#b-custom"/></svg></span><span class="body"><span class="name">Qwen3 · local</span><span class="sub">Custom provider · studio-mini-1</span></span><span class="pjxac-side">No limits</span></div>
+              <div class="people-list__footer v-fade" style="--d:8.6s"><span>5 accounts</span><span>5 shown</span></div>
+            </aside>
+            <main class="pjxac-pane">
+              <div class="pjxac-detail__head v-fade" style="--d:7.75s">
+                <span class="brand brand--46 is-claude"><svg><use href="#b-claude"/></svg></span>
+                <span class="pjxac-detail__id"><strong>Claude Team</strong><span>anna@northwind.studio</span>
+                  <span class="pjxac-tags"><span class="pill">Team plan</span><span class="pill">Claude Code</span><span class="pill">On 2 workers</span><span class="pill is-ok">Signed in</span><span class="pill">Checked 4m ago</span></span></span>
+              </div>
+              <div class="pjxac-tabs v-fade" style="--d:7.95s">
+                <span class="pjxac-tabs__tab">Usage</span><span class="pjxac-tabs__tab is-on">Workers</span><span class="pjxac-tabs__tab">Who uses it</span><span class="pjxac-tabs__tab">Details</span><span class="pjxac-tabs__tab">MCP</span>
+              </div>
+              <div class="wkRow v-rise" style="--d:9.60s"><svg class="ic"><use href="#a-monitor"/></svg><span><code>studio-mini-1</code><small>Your machine · last heard from 1m ago</small></span><span class="wk-week">Week used, as read here<span class="pjxac-track"><span class="pjxac-track__fill" style="width:61%"></span></span>61%</span><span class="pill is-ok">Signed in</span></div>
+              <div class="wkRow v-rise" style="--d:9.95s"><svg class="ic"><use href="#a-server"/></svg><span><code>linux-build-01</code><small>Somebody else's machine · last heard from 3m ago</small></span><span class="wk-week">Week used, as read here<span class="pjxac-track"><span class="pjxac-track__fill" style="width:61%"></span></span>61%</span><span class="pill is-ok">Signed in</span></div>
+              <div class="wkRow v-rise" style="--d:10.30s"><svg class="ic"><use href="#a-laptop"/></svg><span><code>home-mini</code><small>Your machine · not answering since yesterday</small></span><span class="wk-week">—</span><span class="pill">Offline</span></div>
+              <div class="pjxac-banner v-rise" style="--d:11.10s"><svg class="ic"><use href="#a-triangle"/></svg><span><strong>ChatGPT Team is close to the weekly limit</strong>Assistants on that account switch to the next one in their model menu until the limit resets — Saturday at 09:00.</span></div>
+            </main>
           </div>
         </div>
-
       </div>
     </div>
   </section>
 
-  <!-- ========================================================== 3 · connect -->
-  <section class="scene" data-scene="connect">
+  <!-- ============================================================ 7 · stats -->
+  <!-- 0.60 "See how the team works."
+       2.59 "Hours, prompts, tokens and cost, per person, per project, per model."
+       7.67 "And who is working on what, right now." -->
+  <section class="scene" data-scene="stats">
     <div class="scene__head">
-      <span class="vKicker v-fade" style="--d:0.10s">Connect and sign in</span>
-      <h2 class="vHead v-rise" style="--d:0.20s">Your machines, on one account</h2>
-    </div>
-    <div class="scene__body" style="flex-direction:column;align-items:center">
-      <div class="wire">
-        <div class="node v-left" style="--d:0.30s">
-          <svg class="ic"><use href="#i-monitor"/></svg>
-          <span class="node__name">studio-mini-1</span>
-          <span class="node__meta">macOS · your machine</span>
-        </div>
-        <div style="display:flex;align-items:center;padding:0 18px">
-          <span class="link v-growx" style="--d:0.75s;--t:0.6s;flex:1">
-            <i class="linkDot" style="right:-4px"></i>
-          </span>
-          <div class="hubNode v-pop" style="--d:0.55s;margin:0 18px">
-            <img src="/public/favicon.svg" alt="">
-            <strong>Coding Lab</strong>
-          </div>
-          <span class="link link--r v-growx" style="--d:0.95s;--t:0.6s;flex:1">
-            <i class="linkDot" style="left:-4px"></i>
-          </span>
-        </div>
-        <div class="node v-right" style="--d:0.30s">
-          <svg class="ic"><use href="#i-server"/></svg>
-          <span class="node__name">linux-build-01</span>
-          <span class="node__meta">Ubuntu · shared worker</span>
-        </div>
-      </div>
-
-      <div class="signins">
-        <span class="signin v-rise" style="--d:1.95s"><span class="mark" style="background:oklch(0.62 0.16 45)">C</span>Claude Team<svg class="ic ic-15 ic-check"><use href="#i-check"/></svg></span>
-        <span class="signin v-rise" style="--d:2.25s"><span class="mark" style="background:var(--ink)">O</span>Codex<svg class="ic ic-15 ic-check"><use href="#i-check"/></svg></span>
-        <span class="signin v-rise" style="--d:2.55s"><span class="mark" style="background:var(--green)">L</span>Qwen3 · local<svg class="ic ic-15 ic-check"><use href="#i-check"/></svg></span>
-      </div>
-
-      <div class="v-pop" style="--d:3.55s;margin-top:28px">
-        <span class="tag tag--accent" style="height:34px;padding:0 16px;font-size:14px;border-radius:10px">
-          <svg class="ic ic-15"><use href="#i-spark"/></svg>Ready to work
-        </span>
-      </div>
-    </div>
-  </section>
-
-  <!-- ========================================================== 4 · project -->
-  <section class="scene" data-scene="project">
-    <div class="scene__head">
-      <span class="vKicker v-fade" style="--d:0.10s">New project</span>
-      <h2 class="vHead v-rise" style="--d:0.20s">Pick a template, choose a machine</h2>
+      <span class="vKicker v-fade" style="--d:0.10s">Statistics</span>
+      <h2 class="vHead v-rise" style="--d:0.20s">How the team works, and what the work was</h2>
     </div>
     <div class="scene__body">
-      <div class="winWrap">
-        <div class="window v-lift" style="--d:0.30s">
-          <div class="window__bar">
-            <span class="light light--r"></span><span class="light light--y"></span><span class="light light--g"></span>
-            <span class="window__title">new project · orbit-web</span>
+      <div class="app v-lift" style="--d:0.30s">
+        <aside class="app__rail">
+          <div class="rail__brand"><span class="rail__space"><svg class="ic" style="width:13px;height:13px;stroke-width:2.4"><use href="#a-code"/></svg></span></div>
+          <span class="rail__item"><svg class="ic"><use href="#a-search"/></svg></span>
+          <span class="rail__sep"></span>
+          <span class="rail__item is-active"><svg class="ic"><use href="#a-grid"/></svg></span>
+          <span class="rail__item"><svg class="ic"><use href="#a-diagram"/></svg><span class="rail__badge">4</span></span>
+          <span class="rail__item"><svg class="ic"><use href="#a-server"/></svg></span>
+          <span class="rail__sep"></span>
+          <span class="rail__item"><svg class="ic"><use href="#a-help"/></svg></span>
+          <span class="rail__item"><svg class="ic"><use href="#a-sparkles"/></svg></span>
+          <div class="rail__bottom">
+            <span class="rail__item"><span class="rail__lang">EN</span></span>
+            <span class="rail__item"><svg class="ic"><use href="#a-half"/></svg></span>
+            <span class="rail__item"><svg class="ic"><use href="#a-gear"/></svg></span>
           </div>
-          <div class="tmplGrid">
-            <div class="tmpl tmpl--picked v-rise" style="--d:0.55s">
-              <svg class="ic"><use href="#i-layers"/></svg>
-              <strong>Web app</strong><small>node 22 · pnpm · vite</small>
-            </div>
-            <div class="tmpl v-rise" style="--d:0.70s">
-              <svg class="ic"><use href="#i-server"/></svg>
-              <strong>API service</strong><small>python 3.12 · uv</small>
-            </div>
-            <div class="tmpl v-rise" style="--d:0.85s">
-              <svg class="ic"><use href="#i-phone"/></svg>
-              <strong>iOS app</strong><small>xcode 16 · swift 6</small>
-            </div>
+        </aside>
+        <header class="app__head">
+          <span class="app__title"><svg class="ic"><use href="#a-grid"/></svg>Dashboard<small>NORTHWIND STUDIO</small></span>
+          <div class="ai-tabs" style="margin-left:14px">
+            <span class="subtab" id="liveTab" style="animation:vTabOn .3s forwards 7.75s"><svg class="ic"><use href="#a-tower"/></svg>Live</span>
+            <span class="subtab active" style="animation:vTabOff .3s forwards 7.75s">This week</span>
+            <span class="subtab">This month</span>
+            <span class="subtab">Quarter</span>
           </div>
-          <div class="runOn v-drop" style="--d:3.05s">
-            <span><svg class="ic ic-14" style="display:inline;vertical-align:-2px;color:var(--text-muted)"><use href="#i-monitor"/></svg>
-              Runs on <b>studio-mini-1</b></span>
-            <span class="sep v-fade" style="--d:3.55s"></span>
-            <span class="v-fade" style="--d:3.55s">Using
-              <span class="mark" style="background:oklch(0.62 0.16 45);display:inline-grid;vertical-align:-4px">C</span> <b>Claude Team</b>
-              and <span class="mark" style="background:var(--ink);display:inline-grid;vertical-align:-4px">O</span> <b>Codex</b>
-            </span>
-            <span class="tag tag--good v-pop" style="margin-left:auto;--d:3.85s">Environment ready</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============================================================== 5 · hub -->
-  <section class="scene" data-scene="hub">
-    <div class="scene__head">
-      <span class="vKicker v-fade" style="--d:0.15s">One interface</span>
-      <h2 class="vHead v-rise" style="--d:0.25s">Every machine, project and account</h2>
-    </div>
-    <div class="scene__body">
-      <div class="winWrap winWrap--wide">
-        <div class="window v-lift" style="--d:0.40s">
-          <div class="window__bar">
-            <span class="light light--r"></span><span class="light light--y"></span><span class="light light--g"></span>
-            <span class="window__title">coding-lab.co · your workspace</span>
-          </div>
-          <div class="hubCols">
-
-            <div class="hubCol">
-              <div class="hubCol__head v-fade" style="--d:3.30s">
-                <svg class="ic"><use href="#i-server"/></svg><strong>Machines</strong><span class="n">3</span>
-              </div>
-              <div class="hubItem v-rise" style="--d:3.50s"><span class="hubDot"></span><span class="ellipsis">studio-mini-1</span><span class="hubItem__meta">macOS</span></div>
-              <div class="hubItem v-rise" style="--d:3.70s"><span class="hubDot"></span><span class="ellipsis">linux-build-01</span><span class="hubItem__meta">Ubuntu</span></div>
-              <div class="hubItem v-rise" style="--d:3.90s"><span class="hubDot hubDot--idle"></span><span class="ellipsis">home-mini</span><span class="hubItem__meta">idle</span></div>
-            </div>
-
-            <div class="hubCol">
-              <div class="hubCol__head v-fade" style="--d:4.70s">
-                <svg class="ic"><use href="#i-folder"/></svg><strong>Projects</strong><span class="n">3</span>
-              </div>
-              <div class="hubItem v-rise" style="--d:4.90s"><span class="mark" style="background:var(--proj-orbit)">O</span><span class="ellipsis">orbit-web</span><span class="hubItem__meta">4 running</span></div>
-              <div class="hubItem v-rise" style="--d:5.10s"><span class="mark" style="background:var(--proj-ledger)">L</span><span class="ellipsis">ledger-app</span><span class="hubItem__meta">2 running</span></div>
-              <div class="hubItem v-rise" style="--d:5.30s"><span class="mark" style="background:var(--proj-pulse)">P</span><span class="ellipsis">pulse-mobile</span><span class="hubItem__meta">1 running</span></div>
-            </div>
-
-            <div class="hubCol">
-              <div class="hubCol__head v-fade" style="--d:6.00s">
-                <svg class="ic"><use href="#i-key"/></svg><strong>AI accounts</strong><span class="n">3</span>
-              </div>
-              <div class="hubItem v-rise" style="--d:6.20s">
-                <span class="mark" style="background:oklch(0.62 0.16 45)">C</span><span class="ellipsis">Claude Team</span>
-                <span class="hubItem__meta"><span class="tag tag--accent v-pop" style="--d:7.90s">Shared</span></span>
-              </div>
-              <div class="hubItem v-rise" style="--d:6.40s">
-                <span class="mark" style="background:var(--ink)">O</span><span class="ellipsis">Codex Team</span>
-                <span class="hubItem__meta"><span class="tag tag--accent v-pop" style="--d:8.15s">Shared</span></span>
-              </div>
-              <div class="hubItem v-rise" style="--d:6.60s">
-                <span class="mark" style="background:var(--green)">L</span><span class="ellipsis">Qwen3 · local</span>
-                <span class="hubItem__meta">private</span>
+          <span class="pill" style="margin-left:10px">All projects</span>
+          <span class="pill">vs last week</span>
+          <span class="app__menu"><svg class="ic"><use href="#a-ellipsis"/></svg></span>
+        </header>
+        <div class="app__body" style="position:relative">
+          <div class="ovw" style="grid-template-columns:246px repeat(3, 1fr);grid-template-rows:auto 1fr">
+            <!-- At a glance -->
+            <div class="ovw-card" style="grid-row:1 / 3">
+              <div class="ovw-card__head"><h2>At a glance</h2><span class="ovw-card__fact">This week</span></div>
+              <div class="ovw-card__body" style="gap:0">
+                <div class="ovw-glance">
+                  <div class="ovw-glance__row v-fade" style="--d:2.60s"><span class="ovw-glance__label">Hours</span><span class="ovw-glance__value"><strong>68h 20m</strong><small class="up">▲ 11%</small></span></div>
+                  <div class="ovw-glance__row v-fade" style="--d:2.85s"><span class="ovw-glance__label">Prompts</span><span class="ovw-glance__value"><strong>1,284</strong><small class="up">▲ 18%</small></span></div>
+                  <div class="ovw-glance__row v-fade" style="--d:3.05s"><span class="ovw-glance__label">Conversations</span><span class="ovw-glance__value"><strong>412</strong><small class="up">▲ 23%</small></span></div>
+                  <div class="ovw-glance__row v-fade" style="--d:3.35s"><span class="ovw-glance__label">Tokens</span><span class="ovw-glance__value"><strong>38.4M</strong><small>▲ 9%</small></span></div>
+                  <div class="ovw-glance__row v-fade" style="--d:3.60s"><span class="ovw-glance__label">Est. cost</span><span class="ovw-glance__value"><strong>$212</strong><small>$5.50 / 1M</small></span></div>
+                  <div class="ovw-glance__row v-fade" style="--d:3.85s"><span class="ovw-glance__label">People active</span><span class="ovw-glance__value"><strong>9 of 12</strong><small>same as before</small></span></div>
+                  <div class="ovw-glance__row v-fade" style="--d:4.05s"><span class="ovw-glance__label">Avg prompt</span><span class="ovw-glance__value"><strong>4m 10s</strong><small>▼ 6%</small></span></div>
+                  <div class="ovw-glance__row v-fade" style="--d:4.25s"><span class="ovw-glance__label">Error rate</span><span class="ovw-glance__value"><strong>1.4%</strong><small class="up">▼ 0.3</small></span></div>
+                </div>
+                <p class="ovw-card__foot v-fade" style="--d:4.5s;margin-top:auto">Changes compare with last week.</p>
               </div>
             </div>
-
-          </div>
-          <div class="card-foot v-fade" style="--d:8.40s">
-            <svg class="ic ic-15"><use href="#i-users"/></svg>
-            <span>Shared accounts are available to <strong>everyone you invite</strong> — on any machine they are allowed to use.</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============================================================= 6 · team -->
-  <section class="scene" data-scene="team">
-    <div class="scene__head">
-      <span class="vKicker v-fade" style="--d:0.10s">Together, and measured</span>
-      <h2 class="vHead v-rise" style="--d:0.20s">Your team, and how the work is going</h2>
-    </div>
-    <div class="scene__body">
-      <div class="winWrap winWrap--wide">
-        <div class="window v-lift" style="--d:0.25s">
-          <div class="window__bar">
-            <span class="light light--r"></span><span class="light light--y"></span><span class="light light--g"></span>
-            <span class="window__title">northwind studio · this week</span>
-          </div>
-          <div class="teamGrid">
-
-            <div>
-              <div class="secHead v-fade" style="--d:0.45s">Working now</div>
-              <div class="trow v-rise" style="--d:0.60s">
-                <span class="trow__who"><span class="avatar avatar--26" style="background:oklch(0.58 0.14 160)">AK</span>Anna Kowalska</span>
-                <span class="trow__task"><span class="ellipsis">Billing settings page</span><span class="proj">orbit-web</span></span>
-                <span class="status status--running"><span class="dot is-pulsing"></span>Running</span>
-              </div>
-              <div class="trow v-rise" style="--d:0.85s">
-                <span class="trow__who"><span class="avatar avatar--26" style="background:oklch(0.6 0.14 30)">AR</span>Alex Rivera</span>
-                <span class="trow__task"><span class="ellipsis">Push notification retries</span><span class="proj">orbit-web</span></span>
-                <span class="status status--running"><span class="dot is-pulsing"></span>Running</span>
-              </div>
-              <div class="trow v-rise" style="--d:1.10s">
-                <span class="trow__who"><span class="avatar avatar--26" style="background:oklch(0.55 0.12 250)">JM</span>Jean Moreau</span>
-                <span class="trow__task"><span class="ellipsis">Invoice PDF export</span><span class="proj">ledger-app</span></span>
-                <span class="status status--waiting"><span class="dot"></span>Waiting</span>
-              </div>
-              <div class="trow v-rise" style="--d:1.35s">
-                <span class="trow__who"><span class="avatar avatar--26" style="background:oklch(0.58 0.17 300)">OB</span>Oleh Bondar</span>
-                <span class="trow__task"><span class="ellipsis">Offline sync</span><span class="proj">pulse-mobile</span></span>
-                <span class="status status--running"><span class="dot is-pulsing"></span>Running</span>
+            <!-- Prompts per day -->
+            <div class="ovw-card" style="grid-column:2 / 5">
+              <div class="ovw-card__head"><div><h2>Prompts per day</h2><p>Peak 268 · Thursday · avg 183 a day</p></div><span class="ovw-legend"><span><i></i>This week</span><span><i class="prev"></i>Last week (grey)</span></span></div>
+              <div class="ovw-card__body" style="gap:0;padding-top:8px">
+                <div class="ovw-chart">
+                  <div class="ovw-chart__bar"><i class="prev" style="height:38%;--d:2.8s"></i><i style="height:46%;--d:2.85s"></i></div>
+                  <div class="ovw-chart__bar"><i class="prev" style="height:52%;--d:2.95s"></i><i style="height:61%;--d:3.0s"></i></div>
+                  <div class="ovw-chart__bar"><i class="prev" style="height:44%;--d:3.1s"></i><i style="height:55%;--d:3.15s"></i></div>
+                  <div class="ovw-chart__bar"><i class="prev" style="height:70%;--d:3.25s"></i><i style="height:100%;--d:3.3s"></i></div>
+                  <div class="ovw-chart__bar"><i class="prev" style="height:58%;--d:3.4s"></i><i style="height:82%;--d:3.45s"></i></div>
+                  <div class="ovw-chart__bar"><i class="prev" style="height:12%;--d:3.55s"></i><i style="height:18%;--d:3.6s"></i></div>
+                  <div class="ovw-chart__bar"><i class="prev" style="height:8%;--d:3.7s"></i><i style="height:10%;--d:3.75s"></i></div>
+                </div>
+                <div class="ovw-chart__axis v-fade" style="--d:3.9s"><span>MON</span><span>TUE</span><span>WED</span><span>THU</span><span>FRI</span><span>SAT</span><span>SUN</span></div>
               </div>
             </div>
-
-            <div>
-              <div class="secHead v-fade" style="--d:2.50s">Conversations · 7 days</div>
-              <div class="bars">
-                <span style="height:34%;--d:2.65s"></span>
-                <span style="height:48%;--d:2.78s"></span>
-                <span style="height:42%;--d:2.91s"></span>
-                <span style="height:63%;--d:3.04s"></span>
-                <span style="height:58%;--d:3.17s"></span>
-                <span style="height:79%;--d:3.30s"></span>
-                <span class="is-peak" style="height:100%;--d:3.43s"></span>
-              </div>
-              <div class="barAxis v-fade" style="--d:3.60s"><span>MON</span><span>SUN</span></div>
-              <div class="statRow">
-                <div class="v-rise" style="--d:4.55s"><span class="label">Conversations</span><span class="value">412</span><span class="up">▲ 23%</span></div>
-                <div class="v-rise" style="--d:4.75s"><span class="label">Hours saved</span><span class="value">68</span><span class="up">▲ 11%</span></div>
-                <div class="v-rise" style="--d:4.95s"><span class="label">Merged</span><span class="value">37</span><span class="up">▲ 9%</span></div>
+            <!-- People -->
+            <div class="ovw-card v-rise" style="--d:4.90s;--t:.5s">
+              <div class="ovw-card__head"><h2>People</h2><span class="ovw-card__fact">Where the time went</span></div>
+              <div class="ovw-card__body" style="gap:0">
+                <div class="ovw-people__row"><span class="avatar avatar--24" style="background:oklch(0.58 0.14 160)">AK</span><span class="ellipsis">Anna Kowalska</span><span class="ovw-people__bar"><i class="v-growx" style="width:92%;background:oklch(0.6 0.19 280);--d:5.1s"></i></span><span class="ovw-people__n">18h 40m</span></div>
+                <div class="ovw-people__row"><span class="avatar avatar--24" style="background:oklch(0.6 0.14 30)">AR</span><span class="ellipsis">Alex Rivera</span><span class="ovw-people__bar"><i class="v-growx" style="width:74%;background:oklch(0.6 0.19 280);--d:5.2s"></i></span><span class="ovw-people__n">14h 05m</span></div>
+                <div class="ovw-people__row"><span class="avatar avatar--24" style="background:oklch(0.55 0.12 250)">JM</span><span class="ellipsis">Jean Moreau</span><span class="ovw-people__bar"><i class="v-growx" style="width:58%;background:oklch(0.7 0.12 185);--d:5.3s"></i></span><span class="ovw-people__n">11h 20m</span></div>
+                <div class="ovw-people__row"><span class="avatar avatar--24" style="background:oklch(0.58 0.17 300)">OB</span><span class="ellipsis">Oleh Bondar</span><span class="ovw-people__bar"><i class="v-growx" style="width:46%;background:oklch(0.58 0.17 300);--d:5.4s"></i></span><span class="ovw-people__n">9h 15m</span></div>
               </div>
             </div>
-
+            <!-- Projects -->
+            <div class="ovw-card v-rise" style="--d:5.50s;--t:.5s">
+              <div class="ovw-card__head"><h2>Projects</h2><span class="ovw-card__fact">Total 68h 20m</span></div>
+              <div class="ovw-card__body" style="gap:0">
+                <div class="ovw-people__row" style="grid-template-columns:20px 1fr 90px 44px"><span class="pjx-avatar pjx-avatar--sm" style="width:18px;height:18px"><svg class="ic" style="width:10px;height:10px"><use href="#a-globe"/></svg></span><span class="ellipsis">Orbit Website</span><span class="ovw-people__bar"><i class="v-growx" style="width:88%;background:oklch(0.6 0.19 280);--d:5.7s"></i></span><span class="ovw-people__n">52%</span></div>
+                <div class="ovw-people__row" style="grid-template-columns:20px 1fr 90px 44px"><span class="pjx-avatar pjx-avatar--sm pjx-avatar--teal" style="width:18px;height:18px"><svg class="ic" style="width:10px;height:10px"><use href="#a-note"/></svg></span><span class="ellipsis">Atlas Notes</span><span class="ovw-people__bar"><i class="v-growx" style="width:50%;background:oklch(0.7 0.12 185);--d:5.8s"></i></span><span class="ovw-people__n">29%</span></div>
+                <div class="ovw-people__row" style="grid-template-columns:20px 1fr 90px 44px"><span class="pjx-avatar pjx-avatar--sm" style="width:18px;height:18px;background:oklch(0.58 0.17 300)"><svg class="ic" style="width:10px;height:10px"><use href="#a-phone"/></svg></span><span class="ellipsis">Studio App</span><span class="ovw-people__bar"><i class="v-growx" style="width:32%;background:oklch(0.58 0.17 300);--d:5.9s"></i></span><span class="ovw-people__n">19%</span></div>
+                <p class="ovw-card__foot" style="margin-top:8px">lead Anna Kowalska · 3 subprojects</p>
+              </div>
+            </div>
+            <!-- Models -->
+            <div class="ovw-card v-rise" style="--d:6.10s;--t:.5s">
+              <div class="ovw-card__head"><h2>Models</h2><span class="ovw-card__fact">4 in use</span></div>
+              <div class="ovw-card__body">
+                <div class="ovw-models">
+                  <div class="ovw-model"><span class="brand brand--inline is-claude"><svg><use href="#b-claude"/></svg></span>Opus<span class="bar"><i class="v-growx" style="width:58%;--d:6.3s"></i></span><span class="n">58%</span></div>
+                  <div class="ovw-model"><span class="brand brand--inline is-codex"><svg><use href="#b-openai"/></svg></span>GPT-5.6 Sol<span class="bar"><i class="v-growx" style="width:24%;--d:6.4s"></i></span><span class="n">24%</span></div>
+                  <div class="ovw-model"><span class="brand brand--inline is-deepseek"><svg><use href="#b-deepseek"/></svg></span>DeepSeek V4<span class="bar"><i class="v-growx" style="width:11%;--d:6.5s"></i></span><span class="n">11%</span></div>
+                  <div class="ovw-model"><span class="brand brand--inline is-custom"><svg><use href="#b-custom"/></svg></span>Qwen3<span class="bar"><i class="v-growx" style="width:7%;--d:6.6s"></i></span><span class="n">7%</span></div>
+                </div>
+                <p class="ovw-card__foot">median 4m 10s · 12% of conversations switched model</p>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-    </div>
-  </section>
 
-  <!-- ======================================================== 7 · structure -->
-  <section class="scene" data-scene="structure">
-    <div class="scene__head">
-      <span class="vKicker v-fade" style="--d:0.10s">Structure</span>
-      <h2 class="vHead v-rise" style="--d:0.20s">Projects, sub-projects, and what belongs to them</h2>
-    </div>
-    <div class="scene__body">
-      <div class="tree v-lift" style="--d:0.40s">
-        <div class="tree__root">
-          <span class="mark" style="background:var(--proj-orbit)">O</span>
-          <strong>orbit-web</strong>
-          <span class="tag tag--accent">3 sub-projects</span>
-        </div>
-
-        <div class="branch v-left" style="--d:2.15s">
-          <svg class="ic"><use href="#i-folder"/></svg>
-          <span class="branch__name">web client</span>
-          <span class="leafs">
-            <span class="leaf v-pop" style="--d:3.60s"><svg class="ic"><use href="#i-doc"/></svg>12 repos</span>
-            <span class="leaf v-pop" style="--d:3.75s"><svg class="ic"><use href="#i-bot"/></svg>4 sessions</span>
-          </span>
-        </div>
-        <div class="branch v-left" style="--d:2.45s">
-          <svg class="ic"><use href="#i-folder"/></svg>
-          <span class="branch__name">billing api</span>
-          <span class="leafs">
-            <span class="leaf v-pop" style="--d:3.90s"><svg class="ic"><use href="#i-doc"/></svg>5 repos</span>
-            <span class="leaf v-pop" style="--d:4.05s"><svg class="ic"><use href="#i-bug"/></svg>9 issues</span>
-          </span>
-        </div>
-        <div class="branch v-left" style="--d:2.75s">
-          <svg class="ic"><use href="#i-folder"/></svg>
-          <span class="branch__name">infrastructure</span>
-          <span class="leafs">
-            <span class="leaf v-pop" style="--d:4.20s"><svg class="ic"><use href="#i-shield"/></svg>2 environments</span>
-            <span class="leaf v-pop" style="--d:4.35s"><svg class="ic"><use href="#i-clock"/></svg>nightly</span>
-          </span>
-        </div>
-        <div class="card-foot v-fade" style="--d:5.10s">
-          <svg class="ic ic-15"><use href="#i-layers"/></svg>
-          <span>Repos, sessions, environments and schedules stay with the
-            <strong>sub-project they belong to</strong>.</span>
+          <!-- Live: "Right now" -->
+          <div class="ovw-live v-fade" style="--d:7.80s;--t:.5s">
+            <div style="display:flex;flex-direction:column;gap:10px;min-height:0">
+              <div class="ovw-live__head"><h1>Right now</h1><p>3 of 9 people are in a conversation · 4 open · 2 running · 1 waiting for a reply · 0 queued</p></div>
+              <div class="ovw-pc v-rise" style="--d:8.00s;--t:.5s"><span class="avatar avatar--30" style="background:oklch(0.58 0.14 160)">AK<span class="pres"></span></span><span class="ovw-pc__who"><strong>Anna Kowalska</strong><small>Writing the answer · Billing settings page · Orbit Website · turn 02:14</small></span><span class="pill is-ok ovw-pc__chip">Running</span><span class="pill">studio-mini-1</span></div>
+              <div class="ovw-pc v-rise" style="--d:8.25s;--t:.5s"><span class="avatar avatar--30" style="background:oklch(0.6 0.14 30)">AR<span class="pres"></span></span><span class="ovw-pc__who"><strong>Alex Rivera</strong><small>Working · Push notification retries · Orbit Website · turn 11:40</small></span><span class="pill is-ok ovw-pc__chip">Running</span><span class="pill">linux-build-01</span></div>
+              <div class="ovw-pc v-rise" style="--d:8.50s;--t:.5s"><span class="avatar avatar--30" style="background:oklch(0.55 0.12 250)">JM<span class="pres is-wait"></span></span><span class="ovw-pc__who"><strong>Jean Moreau</strong><small>Invoice PDF export · Atlas Notes · waiting 06:02</small></span><span class="pill is-warn ovw-pc__chip">Waiting for reply</span><span class="pill">linux-build-01</span></div>
+              <div class="ovw-pc v-rise" style="--d:8.75s;--t:.5s;opacity:.7"><span class="avatar avatar--30" style="background:oklch(0.58 0.17 300)">OB</span><span class="ovw-pc__who"><strong>Oleh Bondar</strong><small>Idle since 16:40</small></span><span class="pill ovw-pc__chip">Idle</span></div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:10px">
+              <div class="ovw-card v-rise" style="--d:8.20s;--t:.5s"><div class="ovw-card__head"><h2>Now</h2></div><div class="ovw-card__body" style="gap:0">
+                <div class="ovw-now__row"><span>Running</span><strong>2</strong></div>
+                <div class="ovw-now__row"><span>Waiting for a reply</span><strong>1</strong></div>
+                <div class="ovw-now__row"><span>Machines busy</span><strong>2 of 3</strong></div>
+                <div class="ovw-now__row"><span>Tokens, last hour</span><strong>1.2M</strong></div>
+              </div></div>
+              <div class="ovw-card v-rise" style="--d:8.60s;--t:.5s"><div class="ovw-card__head"><h2>Activity</h2></div><div class="ovw-card__body" style="gap:2px">
+                <div class="ovw-feed__row"><time>16:52</time><span>Anna started <em>Billing settings page</em> <small>· studio-mini-1</small></span></div>
+                <div class="ovw-feed__row"><time>16:47</time><span>Jean is waiting on a reply <small>· Atlas Notes</small></span></div>
+                <div class="ovw-feed__row"><time>16:31</time><span>Alex pushed <em>ai/push-retries</em> to main <small>· 3 commits</small></span></div>
+              </div></div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
   <!-- ============================================================== 8 · cta -->
-  <section class="scene" data-scene="cta">
-    <div class="brandLock v-pop" style="--d:0.20s">
+  <!-- 0.70 "Coding Lab."  2.46 "Every project, every assistant, one place."  6.21 "Start at coding-lab.co" -->
+  <section class="scene scene--centre" data-scene="cta">
+    <div class="brandLock v-pop" style="--d:0.30s">
       <img src="/public/favicon.svg" alt=""><span>Coding Lab</span>
     </div>
     <div class="spacer"></div>
-    <p class="vLead v-rise" style="--d:1.10s">Every machine, every project and every AI account — in one place you control.</p>
+    <p class="vLead v-rise" style="--d:2.30s">Every project, every assistant, every account — in one place you control.</p>
     <div class="spacer"></div>
-    <span class="urlPill v-rise" style="--d:2.00s">
-      coding-lab.co<svg class="ic ic-18"><use href="#i-arrow"/></svg>
-    </span>
+    <span class="urlPill v-rise" style="--d:6.00s">coding-lab.co<svg class="ic ic-18"><use href="#i-arrow"/></svg></span>
   </section>
 
   <div class="chrome">
@@ -382,17 +706,35 @@
   </div>
 </div>
 
-<script>
-/* Pull the landing page's icon sprite in, so #i-* works here too. */
-window.spriteReady = fetch("/public/index.html")
-  .then(r => r.text())
-  .then(html => {
-    const m = html.match(/<svg width="0" height="0"[\s\S]*?<\/svg>/);
-    if (!m) throw new Error("icon sprite not found in public/index.html");
-    document.getElementById("sprite").innerHTML = m[0];
-  });
+<style>
+/* small keyframes that only this page needs */
+@keyframes vDim { to { opacity: .45 } }
+@keyframes vTabOn { to { color: var(--a-text); background: var(--a-surface-2); box-shadow: inset 0 0 0 1px var(--a-border) } }
+@keyframes vTabOff { to { color: var(--a-muted); background: transparent; box-shadow: none } }
+.srcCard .pick { opacity: 0; animation: vPickA .45s both; animation-delay: var(--d, 0s) }
+</style>
 
-/* Hand inspection: ?scene=hub&t=4.2 freezes one scene at one moment. */
+<script>
+/* The landing page's icon sprite, so #i-* works here too. */
+const spriteFromSite = fetch("/public/index.html").then(r => r.text()).then(html => {
+  const m = html.match(/<svg width="0" height="0"[\s\S]*?<\/svg>/);
+  if (!m) throw new Error("icon sprite not found in public/index.html");
+  document.getElementById("sprite").innerHTML = m[0];
+});
+/* The vendor marks that are files (Simple Icons, CC0), injected as symbols so
+   they take currentColor like the inline ones. */
+const marks = Promise.all([["b-openai", "brand/openai.svg"], ["b-deepseek", "brand/deepseek.svg"]].map(([id, url]) =>
+  fetch(url).then(r => r.text()).then(svg => {
+    const d = svg.match(/<path d="([^"]+)"/)[1];
+    const defs = document.querySelector("svg defs");
+    const sym = document.createElementNS("http://www.w3.org/2000/svg", "symbol");
+    sym.id = id; sym.setAttribute("viewBox", "0 0 24 24");
+    sym.innerHTML = `<path fill="currentColor" d="${d}"/>`;
+    defs.appendChild(sym);
+  })));
+window.spriteReady = Promise.all([spriteFromSite, marks]);
+
+/* Hand inspection: ?scene=stats&t=4.2 freezes one scene at one moment. */
 const q = new URLSearchParams(location.search);
 if (q.has("scene")) {
   window.spriteReady.then(() => {

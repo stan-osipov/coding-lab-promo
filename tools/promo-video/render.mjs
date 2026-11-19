@@ -5,15 +5,18 @@
 //   node tools/promo-video/render.mjs --out promo.mp4
 //   node tools/promo-video/render.mjs --stills          # one PNG per scene
 //   node tools/promo-video/render.mjs --only hub        # just that scene
+//   node tools/promo-video/render.mjs --stills --only stats --at 6.5   # that scene, 6.5s in
+//   node tools/promo-video/render.mjs --timing          # speak, print the timeline, stop
 //
-// How it works, in one breath: `say` reads each line of script.json and the
-// result is MEASURED, so the picture is cut to the voice rather than the voice
-// squeezed into a guessed duration. storyboard.html is then opened in headless
+// How it works, in one breath: a neural voice (Kokoro, run locally) reads each
+// line of script.json and the result is MEASURED, so the picture is cut to the
+// voice rather than the voice squeezed into a guessed duration. storyboard.html is then opened in headless
 // Chrome with every animation PAUSED, and each frame is produced by setting the
 // animations' clocks by hand and taking a screenshot. Nothing depends on the
 // render keeping up with real time, so the output is identical on every run.
 //
-// Requires: Chrome (driven by Playwright), ffmpeg, and macOS `say`.
+// Requires: Chrome (driven by Playwright), ffmpeg, and kokoro-js (npm install).
+// With `voice.engine: "say"` in script.json the macOS system voice is used instead.
 
 import { chromium } from "playwright";
 import { spawn, execFile } from "node:child_process";
@@ -51,29 +54,42 @@ if (!scenes.length) throw new Error(`no scene matches --only ${ONLY}`);
 await rm(WORK, { recursive: true, force: true });
 await mkdir(join(WORK, "vo"), { recursive: true });
 
+// The reading happens in voice.mjs, a process of its own — see the note at the
+// top of that file for why. Its exit code is meaningless (it ends itself); the
+// lines.json it leaves behind is what says it finished.
 console.log("Reading the script aloud…");
+await new Promise((done) => {
+  const child = spawn(process.execPath, [join(HERE, "voice.mjs"), join(HERE, "script.json"), join(WORK, "vo"), ONLY ?? ""],
+    { stdio: "inherit" });
+  child.on("close", done);
+});
+const spoken = JSON.parse(await readFile(join(WORK, "vo", "lines.json"), "utf8").catch(() => {
+  throw new Error("the voice step did not finish — see the output above");
+}));
+
 const timeline = [];
 let cursor = 0;
 for (const scene of scenes) {
-  const file = join(WORK, "vo", `${scene.id}.aiff`);
-  await run("say", ["-v", script.voice.name, "-r", String(script.voice.rate), "-o", file, scene.say]);
-  const { stdout } = await run("ffprobe", [
-    "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", file,
-  ]);
-  const speech = Number(stdout.trim());
-  const duration = scene.lead + speech + scene.tail;
-  timeline.push({ ...scene, file, speech, duration, start: cursor, voiceAt: cursor + scene.lead });
+  const line = spoken.find((l) => l.id === scene.id);
+  if (!line) throw new Error(`no audio was produced for scene ${scene.id}`);
+  const duration = scene.lead + line.speech + scene.tail;
+  timeline.push({ ...scene, ...line, duration, start: cursor, voiceAt: cursor + scene.lead });
   cursor += duration - XFADE;          // the next scene dissolves in over the tail
 }
 const TOTAL = timeline.at(-1).start + timeline.at(-1).duration;
 
 for (const s of timeline) {
   console.log(
-    `  ${s.id.padEnd(10)} ${s.start.toFixed(2).padStart(6)}s  +${s.duration.toFixed(2)}s` +
+    `  ${s.id.padEnd(15)} ${s.start.toFixed(2).padStart(6)}s  +${s.duration.toFixed(2)}s` +
     `  (voice ${s.speech.toFixed(2)}s at ${s.voiceAt.toFixed(2)}s)`,
   );
+  // Where each sentence starts, as a scene-local time: what the --d delays in
+  // storyboard.html are written against.
+  if (has("timing")) for (const m of s.marks) console.log(`      ${(s.lead + m.at).toFixed(2).padStart(6)}s  ${m.text}`);
 }
-console.log(`  ${"total".padEnd(10)} ${TOTAL.toFixed(2)}s, ${Math.round(TOTAL * FPS)} frames\n`);
+console.log(`  ${"total".padEnd(15)} ${TOTAL.toFixed(2)}s, ${Math.round(TOTAL * FPS)} frames\n`);
+await writeFile(join(WORK, "timeline.json"), JSON.stringify(timeline, null, 2));
+if (has("timing")) process.exit(0);
 
 /* --------------------------------------------------------- local server -- */
 
@@ -177,7 +193,8 @@ if (has("stills")) {
   const dir = join(HERE, "stills");
   await mkdir(dir, { recursive: true });
   for (const s of timeline) {
-    const t = s.start + Math.min(s.duration - 0.1, s.lead + s.speech);
+    const at = flag("at", null);
+    const t = s.start + (at !== null ? Math.min(s.duration - 0.05, Number(at)) : Math.min(s.duration - 0.1, s.lead + s.speech));
     await page.evaluate(({ t, v, c }) => { window.__frame(t, v); window.__chromeAt(c); },
       { t, v: visibleAt(t), c: chromeAt(t) });
     await page.screenshot({ path: join(dir, `${s.id}.png`), type: "png" });
@@ -235,7 +252,7 @@ await run("ffmpeg", [
   "-y", "-loglevel", "error", ...inputs,
   "-filter_complex",
   `${lanes};${mix}amix=inputs=${timeline.length}:normalize=0:dropout_transition=0[m];` +
-  `[m]highpass=f=85,loudnorm=I=-16:TP=-1.5:LRA=11,apad[a]`,
+  `[m]highpass=f=80,lowpass=f=12000,acompressor=threshold=-18dB:ratio=2.2:attack=12:release=160:makeup=2,loudnorm=I=-16:TP=-1.5:LRA=11,apad[a]`,
   "-map", "[a]", "-t", String(TOTAL), "-ar", "48000", "-ac", "2", track,
 ]);
 

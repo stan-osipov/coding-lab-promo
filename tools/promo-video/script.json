@@ -4,16 +4,21 @@
     "edit the text here and re-render, no code changes needed.",
     "",
     "  id        matches a <section data-scene=\"id\"> in storyboard.html",
-    "  say       what the voice reads. `[[slnc N]]` inserts an N-millisecond",
-    "            pause; it is macOS `say` markup, not spoken.",
+    "  say       what the voice reads. Sentences are spoken one at a time with",
+    "            a short breath between them; a line break (\\n) is a longer one.",
     "  caption   the same line as plain text, for the .srt subtitle file",
     "  lead      silence before the line starts, seconds (the scene animates in)",
     "  tail      silence after the line ends, seconds (the scene holds)",
     "",
     "Scene length is lead + spoken length + tail, measured at render time, so",
-    "the picture always follows the voice rather than a hand-written duration."
+    "the picture always follows the voice rather than a hand-written duration.",
+    "",
+    "voice.engine is `kokoro` (Kokoro-82M, a neural voice run locally through",
+    "kokoro-js; first run downloads the model into node_modules) or `say`",
+    "(the macOS system voice, a fallback). Kokoro voices worth trying: af_heart,",
+    "af_bella, bf_emma, am_michael, am_fenrir, bm_george."
   ],
-  "voice": { "name": "Samantha", "rate": 168 },
+  "voice": { "engine": "kokoro", "name": "af_heart", "speed": 1.08, "say": { "name": "Samantha", "rate": 168 } },
   "fps": 30,
   "width": 1200,
   "height": 675,
@@ -22,57 +27,57 @@
   "scenes": [
     {
       "id": "intro",
-      "say": "We all work on more than one project.",
-      "caption": "We all work on more than one project.",
-      "lead": 1.1,
-      "tail": 1.0
+      "say": "We all work on more than one project. And these days, with more than one AI.",
+      "caption": "We all work on more than one project. And these days, with more than one AI.",
+      "lead": 1.0,
+      "tail": 0.9
     },
     {
-      "id": "machines",
-      "say": "You keep working on your own machine. [[slnc 260]] And you can add another, with its own credentials and its own level of access.",
-      "caption": "You keep working on your own machine. And you can add another, with its own credentials and its own level of access.",
-      "lead": 0.5,
-      "tail": 1.1
-    },
-    {
-      "id": "connect",
-      "say": "Connect the machines, sign in with your accounts, [[slnc 200]] and begin work.",
-      "caption": "Connect the machines, sign in with your accounts, and begin work.",
-      "lead": 0.5,
-      "tail": 1.0
-    },
-    {
-      "id": "project",
-      "say": "Create a project and pick a template. [[slnc 240]] It runs on the machine you choose, using the accounts signed in there.",
-      "caption": "Create a project and pick a template. It runs on the machine you choose, using the accounts signed in there.",
-      "lead": 0.5,
-      "tail": 1.0
-    },
-    {
-      "id": "hub",
-      "say": "Coding Lab is the one interface over all of it. [[slnc 300]] All your machines. [[slnc 240]] All your projects. [[slnc 240]] All your A I accounts, [[slnc 160]] and the ones you choose to share.",
-      "caption": "Coding Lab is the one interface over all of it. All your machines. All your projects. All your AI accounts, and the ones you choose to share.",
+      "id": "one-interface",
+      "say": "Instead of juggling a dozen desktop apps, every conversation for every project, and every AI account you have signed in, lives in one interface.\nPersonal or corporate. Claude, ChatGPT, DeepSeek, or a model of your own.",
+      "caption": "Instead of juggling a dozen desktop apps, every conversation for every project, and every AI account you have signed in, lives in one interface. Personal or corporate. Claude, ChatGPT, DeepSeek, or a model of your own.",
       "lead": 0.6,
       "tail": 1.2
     },
     {
-      "id": "team",
-      "say": "Work alongside your teammates, [[slnc 200]] and see the numbers: how you work, and how far the work has come.",
-      "caption": "Work alongside your teammates, and see the numbers: how you work, and how far the work has come.",
-      "lead": 0.5,
+      "id": "inherit",
+      "say": "Define an agent, a skill, or a resource once, for one project, and every assistant in it has it. Sub-projects inherit it too.",
+      "caption": "Define an agent, a skill, or a resource once, for one project, and every assistant in it has it. Sub-projects inherit it too.",
+      "lead": 0.6,
       "tail": 1.1
     },
     {
-      "id": "structure",
-      "say": "And keep it all in order, [[slnc 200]] with projects, sub-projects, and everything that belongs with them.",
-      "caption": "And keep it all in order, with projects, sub-projects, and everything that belongs with them.",
+      "id": "start-template",
+      "say": "To start a project, you have two options.\nBuild a starting point: repositories, repository rules, instructions and skills. Share it, and every teammate sets up the same environment in minutes.",
+      "caption": "To start a project, you have two options. Build a starting point: repositories, repository rules, instructions and skills. Share it, and every teammate sets up the same environment in minutes.",
+      "lead": 0.6,
+      "tail": 1.0
+    },
+    {
+      "id": "start-local",
+      "say": "Or begin with a folder on your own machine. Prototype, and build from there.",
+      "caption": "Or begin with a folder on your own machine. Prototype, and build from there.",
       "lead": 0.5,
       "tail": 1.0
     },
     {
+      "id": "machines",
+      "say": "Keep working on your own machine, and add another with its own credentials and its own level of access.\nCoding Lab watches every account's limits, on every machine it is signed in on.",
+      "caption": "Keep working on your own machine, and add another with its own credentials and its own level of access. Coding Lab watches every account's limits, on every machine it is signed in on.",
+      "lead": 0.6,
+      "tail": 1.1
+    },
+    {
+      "id": "stats",
+      "say": "See how the team works. Hours, prompts, tokens and cost, per person, per project, per model.\nAnd who is working on what, right now.",
+      "caption": "See how the team works. Hours, prompts, tokens and cost, per person, per project, per model. And who is working on what, right now.",
+      "lead": 0.6,
+      "tail": 1.2
+    },
+    {
       "id": "cta",
-      "say": "Coding Lab. [[slnc 380]] Start at coding dash lab dot co.",
-      "caption": "Coding Lab. Start at coding-lab.co",
+      "say": "Coding Lab. Every project, every assistant, one place.\nStart at coding dash lab dot co.",
+      "caption": "Coding Lab. Every project, every assistant, one place. Start at coding-lab.co",
       "lead": 0.7,
       "tail": 1.8
     }
