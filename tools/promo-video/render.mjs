@@ -78,6 +78,35 @@ for (const scene of scenes) {
 }
 const TOTAL = timeline.at(-1).start + timeline.at(-1).duration;
 
+/**
+ * The storyboard's delays were written against the narration as it was when
+ * each scene was choreographed — `beats` in script.json, the sentence starts
+ * and the end of speech in scene-local seconds. The voice has since been read
+ * again, maybe faster, maybe with other words, so each sentence now starts
+ * somewhere else. Rather than re-typing two hundred delays, the clock each
+ * scene's animations run on is bent: real local time is mapped, piecewise
+ * linearly, sentence start to sentence start, onto the authored timeline. A
+ * cue written to land on "Sub-projects inherit it too" lands on it still.
+ */
+function beatMap(scene) {
+  const authored = scene.beats ? [0, ...scene.beats.starts, scene.beats.end] : null;
+  const actual = [0, ...scene.marks.map((k) => scene.lead + k.at), scene.lead + scene.speech];
+  if (!authored || authored.length !== actual.length) {
+    if (authored) console.warn(`  ! ${scene.id}: ${scene.beats.starts.length} beats but ${scene.marks.length} sentences — scaling the whole scene instead`);
+    const a = authored ? [0, authored.at(-1)] : [0, actual.at(-1)];
+    const b = [0, actual.at(-1)];
+    return (t) => (t <= b[1] ? (t / b[1]) * a[1] : a[1] + (t - b[1]));
+  }
+  return (t) => {
+    if (t >= actual.at(-1)) return authored.at(-1) + (t - actual.at(-1));
+    let i = 1;
+    while (i < actual.length - 1 && t > actual[i]) i++;
+    const f = (t - actual[i - 1]) / Math.max(1e-6, actual[i] - actual[i - 1]);
+    return authored[i - 1] + f * (authored[i] - authored[i - 1]);
+  };
+}
+for (const s of timeline) s.clock = beatMap(s);
+
 for (const s of timeline) {
   console.log(
     `  ${s.id.padEnd(15)} ${s.start.toFixed(2).padStart(6)}s  +${s.duration.toFixed(2)}s` +
@@ -148,7 +177,7 @@ const known = await page.evaluate(({ total, ids }) => {
     });
     window.__anims.forEach((a, k) => {
       const i = window.__scene[k];
-      const local = i === -1 ? t : t - visible.find((x) => x.i === i)?.start;
+      const local = i === -1 ? t : visible.find((x) => x.i === i)?.local;
       if (!Number.isFinite(local)) return;
       try { a.currentTime = Math.max(0, local) * 1000; } catch {}
     });
@@ -169,7 +198,7 @@ function visibleAt(t) {
     // A scene is fully opaque once its dissolve-in is done; the scene beneath
     // simply stays put and is covered, which keeps the blend clean on white.
     const o = i === 0 || into >= XFADE ? 1 : into / XFADE;
-    out.push({ i, o, start: s.start });
+    out.push({ i, o, local: s.clock(into) });
   });
   return out;
 }
@@ -240,20 +269,41 @@ console.log(`\n  picture: ${((Date.now() - began) / 1000).toFixed(0)}s`);
 
 /* -------------------------------------------------------------- the sound -- */
 
-// Each line is laid onto one silent bed at its own start, then the whole track
-// is levelled to the -16 LUFS that web video is mastered to.
+// Each line is laid onto one silent bed at its own start. The voice is then
+// cleaned the way a recorded one would be — a high-pass for rumble, a gentle
+// downward expander so the breaths and tails between words sit below the
+// speech rather than being pulled up to it — and levelled to the −16 LUFS web
+// video is mastered to with ONE measured gain. (An earlier cut used a
+// compressor with make-up gain and a single-pass, dynamic normaliser; those
+// rode the quiet moments up by ~8 dB and were heard as noise behind the voice.)
+const bed = join(WORK, "voice-bed.wav");
 const track = join(WORK, "voice.wav");
 const inputs = timeline.flatMap((s) => ["-i", s.file]);
+// The band-pass is applied per line, in 64-bit precision. In ffmpeg 8 the two
+// biquads chained in their default single precision go unstable on this
+// material (+10 dB, clipping, rubbish in the low end — the "noise behind the
+// voice" of an earlier cut); either filter alone, or both at f64, is clean.
 const lanes = timeline
-  .map((s, i) => `[${i}:a]adelay=${Math.round(s.voiceAt * 1000)}:all=1[v${i}]`)
+  .map((s, i) => `[${i}:a]highpass=f=80:precision=f64,lowpass=f=12000:precision=f64,adelay=${Math.round(s.voiceAt * 1000)}:all=1[v${i}]`)
   .join(";");
 const mix = timeline.map((_, i) => `[v${i}]`).join("");
 await run("ffmpeg", [
   "-y", "-loglevel", "error", ...inputs,
   "-filter_complex",
   `${lanes};${mix}amix=inputs=${timeline.length}:normalize=0:dropout_transition=0[m];` +
-  `[m]highpass=f=80,lowpass=f=12000,acompressor=threshold=-18dB:ratio=2.2:attack=12:release=160:makeup=2,loudnorm=I=-16:TP=-1.5:LRA=11,apad[a]`,
-  "-map", "[a]", "-t", String(TOTAL), "-ar", "48000", "-ac", "2", track,
+  `[m]agate=threshold=0.02:ratio=3:attack=8:release=160:knee=4:detection=rms,apad[a]`,
+  "-map", "[a]", "-t", String(TOTAL), "-ar", "48000", "-ac", "2", bed,
+]);
+const { stderr: measured } = await run("ffmpeg", [
+  "-hide_banner", "-i", bed, "-af", "loudnorm=I=-16:TP=-1.5:LRA=11:print_format=json", "-f", "null", "-",
+]).catch((e) => e);
+// The report is a JSON object in the middle of ffmpeg's log; take it from its
+// opening brace to its closing one, not to the end of the output.
+const lm = JSON.parse(measured.slice(measured.lastIndexOf("{"), measured.lastIndexOf("}") + 1));
+await run("ffmpeg", [
+  "-y", "-loglevel", "error", "-i", bed,
+  "-af", `loudnorm=I=-16:TP=-1.5:LRA=11:linear=true:measured_I=${lm.input_i}:measured_TP=${lm.input_tp}:measured_LRA=${lm.input_lra}:measured_thresh=${lm.input_thresh}:offset=${lm.target_offset}`,
+  "-ar", "48000", track,
 ]);
 
 await run("ffmpeg", [

@@ -1,6 +1,6 @@
 # The promo video
 
-A narrated ~90-second film of what Coding Lab is: one interface over every
+A narrated ~80-second film of what Coding Lab is: one interface over every
 conversation, project and AI account; things defined once and inherited; the
 two ways to start a project; machines and the accounts on them; the team's
 statistics. It is **rendered from this folder**, not edited in a video app, so
@@ -52,14 +52,25 @@ The narration is **Kokoro-82M**, an open neural voice run locally through
 `script.json` picks the speaker and pace:
 
 ```json
-"voice": { "engine": "kokoro", "name": "af_heart", "speed": 1.08 }
+"voice": { "engine": "kokoro", "name": "af_heart", "speed": 1.2, "breath": 0.16, "pause": 0.38 }
 ```
 
 Voices worth trying: `af_heart` (default, warm), `af_bella`, `bf_emma`
 (British), `am_michael`, `am_fenrir`, `bm_george`. Each sentence is spoken on
-its own with a short breath between sentences and a longer one at a `\n` in
-the line, which is how a narrator paces a paragraph. `"engine": "say"` falls
-back to the macOS system voice.
+its own, faded in and out over 8 ms, with `breath` seconds between sentences
+and `pause` seconds at a `\n` in the line, which is how a narrator paces a
+paragraph. `speed` above about 1.25 starts to sound rushed. `"engine": "say"`
+falls back to the macOS system voice.
+
+The finished track is cleaned the way a recording would be: a band-pass
+(80 Hz – 12 kHz) per line, a gentle downward expander so breaths and tails
+between words sit below the speech, and one measured, static gain to
+−16 LUFS. Two things not to undo: the band-pass filters run in 64-bit
+precision (`precision=f64`) — chained in ffmpeg 8's default precision they go
+unstable on this material, +10 dB and rubbish in the low end, which an
+earlier cut shipped as "noise behind the voice" — and there is no compressor
+or single-pass `loudnorm`, both of which ride the quiet moments up. Check a
+gap between scenes with `astats` before publishing; it should read as silence.
 
 `voice.mjs` is a separate process on purpose: the ONNX runtime under
 kokoro-js cannot be shut down cleanly on macOS and aborts the process on exit;
@@ -85,12 +96,18 @@ total is shorter than the sum of the scenes.
 re-render. The scene silently gets longer or shorter to fit.
 
 **Re-timing a scene** — the `--d` values in `storyboard.html` are delays in
-seconds from the start of that scene, written against where each sentence
-starts. See those times without rendering:
+seconds from the start of that scene, written against the sentence starts
+recorded as that scene's `beats` in `script.json`. When the voice is re-read
+(faster, or with other words) the renderer bends each scene's clock so a cue
+still lands on its sentence; you only need to touch the delays when a scene
+gains or loses a sentence. To see where the sentences now start:
 
 ```sh
 node tools/promo-video/render.mjs --timing
 ```
+
+Then, if you changed the sentence count, update that scene's `beats` to the
+printed starts and re-choreograph its delays against them.
 
 **Checking a scene** without rendering the lot:
 

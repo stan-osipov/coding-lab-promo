@@ -14,72 +14,147 @@
     "the picture always follows the voice rather than a hand-written duration.",
     "",
     "voice.engine is `kokoro` (Kokoro-82M, a neural voice run locally through",
+    "beats     the sentence starts and the end of speech, scene-local, that the",
+    "          scene's animation delays in storyboard.html were written against.",
+    "          The renderer bends each scene's clock so cues still land on their",
+    "          sentence after the voice is re-read faster or re-worded.",
+    "",
     "kokoro-js; first run downloads the model into node_modules) or `say`",
     "(the macOS system voice, a fallback). Kokoro voices worth trying: af_heart,",
     "af_bella, bf_emma, am_michael, am_fenrir, bm_george."
   ],
-  "voice": { "engine": "kokoro", "name": "af_heart", "speed": 1.08, "say": { "name": "Samantha", "rate": 168 } },
+  "voice": {
+    "engine": "kokoro",
+    "name": "af_heart",
+    "speed": 1.2,
+    "breath": 0.16,
+    "pause": 0.38,
+    "say": {
+      "name": "Samantha",
+      "rate": 185
+    }
+  },
   "fps": 30,
   "width": 1200,
   "height": 675,
   "scale": 1.6,
-  "crossfade": 0.45,
+  "crossfade": 0.4,
   "scenes": [
     {
       "id": "intro",
       "say": "We all work on more than one project. And these days, with more than one AI.",
       "caption": "We all work on more than one project. And these days, with more than one AI.",
-      "lead": 1.0,
-      "tail": 0.9
+      "lead": 0.7,
+      "tail": 0.6,
+      "beats": {
+        "starts": [
+          1.0,
+          3.79
+        ],
+        "end": 6.57
+      }
     },
     {
       "id": "one-interface",
       "say": "Instead of juggling a dozen desktop apps, every conversation for every project, and every AI account you have signed in, lives in one interface.\nPersonal or corporate. Claude, ChatGPT, DeepSeek, or a model of your own.",
       "caption": "Instead of juggling a dozen desktop apps, every conversation for every project, and every AI account you have signed in, lives in one interface. Personal or corporate. Claude, ChatGPT, DeepSeek, or a model of your own.",
-      "lead": 0.6,
-      "tail": 1.2
+      "lead": 0.45,
+      "tail": 0.75,
+      "beats": {
+        "starts": [
+          0.6,
+          10.8,
+          12.96
+        ],
+        "end": 17.01
+      }
     },
     {
       "id": "inherit",
       "say": "Define an agent, a skill, or a resource once, for one project, and every assistant in it has it. Sub-projects inherit it too.",
       "caption": "Define an agent, a skill, or a resource once, for one project, and every assistant in it has it. Sub-projects inherit it too.",
-      "lead": 0.6,
-      "tail": 1.1
+      "lead": 0.45,
+      "tail": 0.7,
+      "beats": {
+        "starts": [
+          0.6,
+          7.04
+        ],
+        "end": 9.37
+      }
     },
     {
       "id": "start-template",
       "say": "To start a project, you have two options.\nBuild a starting point: repositories, repository rules, instructions and skills. Share it, and every teammate sets up the same environment in minutes.",
       "caption": "To start a project, you have two options. Build a starting point: repositories, repository rules, instructions and skills. Share it, and every teammate sets up the same environment in minutes.",
-      "lead": 0.6,
-      "tail": 1.0
+      "lead": 0.45,
+      "tail": 0.7,
+      "beats": {
+        "starts": [
+          0.6,
+          3.98,
+          9.66
+        ],
+        "end": 13.66
+      }
     },
     {
       "id": "start-local",
       "say": "Or begin with a folder on your own machine. Prototype, and build from there.",
       "caption": "Or begin with a folder on your own machine. Prototype, and build from there.",
-      "lead": 0.5,
-      "tail": 1.0
+      "lead": 0.4,
+      "tail": 0.6,
+      "beats": {
+        "starts": [
+          0.5,
+          3.56
+        ],
+        "end": 5.87
+      }
     },
     {
       "id": "machines",
       "say": "Keep working on your own machine, and add another with its own credentials and its own level of access.\nCoding Lab watches every account's limits, on every machine it is signed in on.",
       "caption": "Keep working on your own machine, and add another with its own credentials and its own level of access. Coding Lab watches every account's limits, on every machine it is signed in on.",
-      "lead": 0.6,
-      "tail": 1.1
+      "lead": 0.45,
+      "tail": 0.7,
+      "beats": {
+        "starts": [
+          0.6,
+          7.17
+        ],
+        "end": 12.3
+      }
     },
     {
       "id": "stats",
       "say": "See how the team works. Hours, prompts, tokens and cost, per person, per project, per model.\nAnd who is working on what, right now.",
       "caption": "See how the team works. Hours, prompts, tokens and cost, per person, per project, per model. And who is working on what, right now.",
-      "lead": 0.6,
-      "tail": 1.2
+      "lead": 0.45,
+      "tail": 0.75,
+      "beats": {
+        "starts": [
+          0.6,
+          2.59,
+          7.67
+        ],
+        "end": 10.19
+      }
     },
     {
       "id": "cta",
       "say": "Coding Lab. Every project, every assistant, one place.\nStart at coding dash lab dot co.",
       "caption": "Coding Lab. Every project, every assistant, one place. Start at coding-lab.co",
-      "lead": 0.7,
-      "tail": 1.8
+      "lead": 0.6,
+      "tail": 1.4,
+      "beats": {
+        "starts": [
+          0.7,
+          2.46,
+          6.21
+        ],
+        "end": 8.82
+      }
     }
   ]
 }

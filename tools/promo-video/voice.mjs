@@ -53,10 +53,19 @@ async function makeReader(voice) {
   process.stdout.write("Loading the Kokoro voice… ");
   const tts = await KokoroTTS.from_pretrained("onnx-community/Kokoro-82M-v1.0-ONNX", { dtype: "fp32", device: "cpu" });
   console.log("ready.");
-  const BREATH = 0.24, PAUSE = 0.55;
+  const BREATH = voice.breath ?? 0.2, PAUSE = voice.pause ?? 0.45, FADE = 0.008;
+  // Each generated sentence is faded in and out over 8 ms. The model's first
+  // and last samples are rarely exactly zero, and a hard edge against the
+  // silence around it is a click.
+  const soften = (a) => {
+    const n = Math.min(a.length >> 1, Math.round(rate * FADE));
+    for (let i = 0; i < n; i++) { const g = i / n; a[i] *= g; a[a.length - 1 - i] *= g; }
+    return a;
+  };
+  let rate = 24000;
   return async (text, file) => {
     const parts = [], marks = [];
-    let rate = 24000, at = 0;
+    let at = 0;
     for (const [li, line] of text.split("\n").entries()) {
       if (li > 0) { const gap = new Float32Array(Math.round(rate * (PAUSE - BREATH))); parts.push(gap); at += gap.length; }
       for (const sentence of line.split(/(?<=[.!?])\s+/).filter(Boolean)) {
@@ -64,7 +73,7 @@ async function makeReader(voice) {
         rate = audio.sampling_rate;
         marks.push({ at: at / rate, text: sentence });
         const breath = new Float32Array(Math.round(rate * BREATH));
-        parts.push(audio.audio, breath);
+        parts.push(soften(audio.audio), breath);
         at += audio.audio.length + breath.length;
       }
     }
