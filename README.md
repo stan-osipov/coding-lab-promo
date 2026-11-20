@@ -80,8 +80,9 @@ Motion (the pulsing status dots, the blinking "working…") is turned off under
 
 ## The promo video
 
-`tools/promo-video/` renders a narrated ~90-second film of the product — the
-sessions view, the Accounts tab, the Dashboard, the starting-point wizard —
+`tools/promo-video/` renders a narrated ~95-second film of the product — the
+sessions view on phone, tablet and computer, shared environments, the
+Accounts tab, the Dashboard, the starting-point wizard —
 as real HTML drawn to the app's own design tokens, framed in this page's
 style. No video editor, no screenshots. The narration is an open neural
 voice (Kokoro) run locally; `npm install` brings it.

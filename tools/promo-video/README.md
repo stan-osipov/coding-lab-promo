@@ -1,9 +1,10 @@
 # The promo video
 
-A narrated ~80-second film of what Coding Lab is: one interface over every
-conversation, project and AI account; things defined once and inherited; the
-two ways to start a project; machines and the accounts on them; the team's
-statistics. It is **rendered from this folder**, not edited in a video app, so
+A narrated ~95-second film of what Coding Lab is: one interface over every
+conversation, project and AI account, on phone, tablet or computer; things
+defined once and inherited; the two ways to start a project; environments
+shared with teammates who have none of their own; machines and the accounts
+on them; colleagues' sessions continued or nudged; the team's statistics. It is **rendered from this folder**, not edited in a video app, so
 changing a word of the script and running one command gives you a new cut.
 
 ```sh
@@ -21,7 +22,7 @@ the fonts.
 | File | What it is |
 |---|---|
 | `script.json` | The narration, the voice, and the scene order. **Start here.** |
-| `storyboard.html` | The eight scenes, as real HTML and CSS |
+| `storyboard.html` | The eleven scenes, as real HTML and CSS |
 | `storyboard.css` | Scene layout, motion, and the product's own design tokens |
 | `render.mjs` | Drives the browser frame by frame, encodes the file |
 | `voice.mjs` | Reads the script aloud (run by `render.mjs` as a child process) |
@@ -52,14 +53,14 @@ The narration is **Kokoro-82M**, an open neural voice run locally through
 `script.json` picks the speaker and pace:
 
 ```json
-"voice": { "engine": "kokoro", "name": "af_heart", "speed": 1.2, "breath": 0.16, "pause": 0.38 }
+"voice": { "engine": "kokoro", "name": "af_heart", "speed": 1.3, "breath": 0.12, "pause": 0.3 }
 ```
 
 Voices worth trying: `af_heart` (default, warm), `af_bella`, `bf_emma`
 (British), `am_michael`, `am_fenrir`, `bm_george`. Each sentence is spoken on
 its own, faded in and out over 8 ms, with `breath` seconds between sentences
 and `pause` seconds at a `\n` in the line, which is how a narrator paces a
-paragraph. `speed` above about 1.25 starts to sound rushed. `"engine": "say"`
+paragraph. `speed` is at 1.3, about as fast as the voice stays natural. `"engine": "say"`
 falls back to the macOS system voice.
 
 The finished track is cleaned the way a recording would be: a band-pass
